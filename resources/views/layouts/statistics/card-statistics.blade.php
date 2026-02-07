@@ -1,0 +1,16 @@
+<div class="flex justify-evenly items-center rounded-2xl border border-gray-200 bg-white  dark:bg-white/[0.03] py-4">
+    @if ($icon)
+        <div class="{{ $iconBg }} flex items-center justify-center w-18 h-18 rounded-full">
+            <img src="{{ asset($icon) }}" alt="">
+        </div>
+    @endif
+    <div>
+        <span class="text-sm text-gray-400 dark:text-gray-100">{{ $title }}</span>
+        <h4 class="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">{{ $value }}</h4>
+        <div class="flex gap-2">
+
+            <span class="text-sm  text-brand-400">{{ $percentage }}</span>
+            <span class="text-sm text-gray-400 dark:text-gray-100">{{ $period }}</span>
+        </div>
+    </div>
+</div>
