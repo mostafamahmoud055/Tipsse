@@ -1,12 +1,14 @@
 <?php
 
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\DashboardController;
 
+
 // dashboard pages
-Route::get('/', function () {
-    return view('pages.dashboard.home', ['title' => 'Tipsse']);
-})->name('dashboard')->middleware(['auth', 'verified']);
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard')->middleware(['auth', 'verified']);
 
 // calender pages
 Route::get('/calendar', function () {
@@ -127,6 +129,21 @@ Route::get('/videos', function () {
 })->name('videos');
 
 
+Route::get('images/{path}', function ($path) {
+
+    $fullPath = Storage::disk('local')->path($path);
+
+    if (! File::exists($fullPath)) {
+        abort(404);
+    }
+
+    return response()->file($fullPath, [
+        'Cache-Control' => 'private, max-age=31536000',
+    ]);
+
+})->where('path', '.*')->name('image.show')->middleware(['auth', 'verified']);
 
 require __DIR__ . '/merchant.php';
 require __DIR__ . '/BusinessType.php';
+require __DIR__ . '/Branch.php';
+require __DIR__ . '/employee.php';

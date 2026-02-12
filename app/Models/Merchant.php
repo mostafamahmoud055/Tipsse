@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Merchant extends Model
 {
 
+    use HasFactory;
     protected $fillable = [
+        'name',
         'business_type',
         'email',
         'phone',
@@ -24,6 +27,10 @@ class Merchant extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function Branches()
+    {
+        return $this->hasMany(Branch::class);
+    }
     public function application()
     {
         return $this->hasOne(MerchantApplication::class);

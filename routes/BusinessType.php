@@ -10,6 +10,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/', [BusinessTypeController::class, 'store'])->name('store');
         // Route::get('/{businessType}/edit', [BusinessTypeController::class, 'edit'])->name('edit');
         Route::put('/{businessType}', [BusinessTypeController::class, 'update'])->name('update');
-        Route::delete('/{businessType}', [BusinessTypeController::class, 'destroy'])->name('destroy');
+        Route::delete('/{businessType}', [BusinessTypeController::class, 'destroy'])->name('delete');
     });
 });

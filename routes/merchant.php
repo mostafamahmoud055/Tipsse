@@ -15,6 +15,8 @@ Route::name('merchants.')->middleware(['auth', 'verified'])->group(function () {
     Route::post('/merchants/{application}/approve', [MerchantApplicationController::class, 'approve'])->name('approve');
     Route::post('/merchants/{application}/reject', [MerchantApplicationController::class, 'reject'])->name('reject');
     Route::post('/merchants/{application}/delete', [MerchantApplicationController::class, 'reject'])->name('delete');
+    Route::delete('/merchants/{businessType}', [MerchantApplicationController::class, 'destroy'])->name('delete');
+
 
     Route::put('merchants/{application}/edit', [MerchantApplicationController::class, 'edit'])
         ->name('edit');
@@ -23,3 +25,4 @@ Route::name('merchants.')->middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::get('/merchant-application', [MerchantApplicationController::class, 'index'])->name('merchant-application')->middleware(['auth', 'verified']);
+Route::get('/contracts', [MerchantApplicationController::class, 'index'])->name('contracts')->middleware(['auth', 'verified']);

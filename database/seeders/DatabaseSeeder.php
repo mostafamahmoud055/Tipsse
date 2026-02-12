@@ -22,5 +22,9 @@ class DatabaseSeeder extends Seeder
             'role' => 'super_admin',
             'email_verified_at' => Carbon::now(),
         ]);
+        User::factory()
+            ->count(100)
+            ->withMerchantApplication()
+            ->create();
     }
 }

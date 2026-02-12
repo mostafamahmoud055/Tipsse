@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('merchants', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->string('business_type');
             $table->string('phone')->nullable();
             $table->boolean('is_active')->default(false);

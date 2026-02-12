@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\MerchantApplication;
-use App\Services\MerchantService;
+use App\Models\Branch;
+use App\Models\Merchant;
 use Illuminate\Http\Request;
+use App\Services\MerchantService;
+use App\Models\MerchantApplication;
+use App\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
 
 class MerchantApplicationController extends Controller
@@ -15,17 +17,37 @@ class MerchantApplicationController extends Controller
     /**
      * List all merchant applications
      */
-public function index()
-{
-    $applications = MerchantApplication::with(['user', 'merchant'])
-        ->paginate(15);
+    public function index()
+    {
+        $applications = $this->merchantService->getApplications(15);
 
-    if (request()->routeIs('merchant-application')) {
-        return view('pages.merchant-application', compact('applications'));
+        // صفحة طلبات التاجر
+        if (request()->routeIs('merchant-application')) {
+            $stats = $this->merchantService->getApplicationStats();
+            return view('pages.merchant-application', [
+                'applications'         => $applications,
+                'totalApplications'    => $stats->total,
+                'approvedApplications' => $stats->approved,
+                'pendingApplications'  => $stats->pending,
+                'rejectedApplications' => $stats->rejected,
+            ]);
+        }
+
+        // صفحة العقود
+        if (request()->routeIs('contracts')) {
+            return view('pages.contracts', [
+                'applications' => $applications,
+            ]);
+        }
+
+        // باقي صفحات التجار
+        $stats = $this->merchantService->getMerchantBranchStats();
+        return view('pages.merchant.merchants', array_merge([
+            'applications' => $applications,
+        ], $stats));
     }
 
-    return view('pages.merchant.merchants', compact('applications'));
-}
+
 
     public function createNewMerchant(Request $request)
     {
@@ -34,7 +56,7 @@ public function index()
             'email' => 'required|email|unique:users,email',
             'phone' => 'required|regex:/^\+?\d{7,15}$/',
             'password' => 'required|string|min:6',
-            'business_type' => 'required|string',
+            'business_type' => 'required|exists:business_types,name',
             'is_actve' => 'boolean'
         ]);
 
@@ -107,11 +129,11 @@ public function index()
     public function edit(Request $request, MerchantApplication $application)
     {
         $request->validate([
-            'name'          => 'required|string|max:255',
-            'email'         => 'required|email|unique:users,email,' . $application->user_id,
+            'name'          => 'nullable|string|max:255',
+            'email'         => 'nullable|email|unique:users,email,' . $application->user_id,
             'phone'         => 'nullable|regex:/^\+?\d{7,15}$/',
             'password'      => 'nullable|string|min:6',
-            'business_type' => 'required|string',
+            'business_type' => 'required|exists:business_types,name',
             'is_active'     => 'boolean',
             'status'        => 'nullable|in:pending,approved,rejected',
         ]);
@@ -121,5 +143,18 @@ public function index()
         return redirect()
             ->back()
             ->with('success', 'Merchant updated successfully.');
+    }
+
+    /**
+     * Delete a merchant application
+     */
+    public function destroy(String $id)
+    {
+
+        $this->merchantService->deleteApplication($id);
+
+        return redirect()
+            ->back()
+            ->with('success', 'Merchant application deleted successfully.');
     }
 }

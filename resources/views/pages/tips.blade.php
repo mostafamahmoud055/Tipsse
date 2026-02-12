@@ -9,7 +9,7 @@
             'icon' => 'images/icons/g3196.png',
             'iconBg' => 'bg-icon-purple',
             'percentage' => "+23%",
-            'period' => 'since last month',
+            'period' => null,
         ])
         @include('layouts.statistics.card-statistics', [
             'title' => 'Released Tips',
@@ -17,7 +17,7 @@
             'icon' => 'images/icons/tabler_check.png',
             'iconBg' => 'bg-icon-green',
             'percentage' => "+23%",
-            'period' => 'since last month',
+            'period' => null,
         ])
         @include('layouts.statistics.card-statistics', [
             'title' => 'Pending Tips',
@@ -25,7 +25,7 @@
             'icon' => 'images/icons/quill_info.png',
             'iconBg' => 'bg-icon-yellow',
             'percentage' => "+23%",
-            'period' => 'since last month',
+            'period' => null,
         ])
         @include('layouts.statistics.card-statistics', [
             'title' => 'Rejected Tips',
@@ -33,7 +33,7 @@
             'icon' => 'images/icons/material-symbols_close-rounded.png',
             'iconBg' => 'bg-icon-red',
             'percentage' => "+23%",
-            'period' => 'since last month',
+            'period' => null,
         ])
 
     </div>

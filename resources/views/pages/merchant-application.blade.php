@@ -4,40 +4,44 @@
     <x-common.page-breadcrumb pageTitle="Merchant Applications" />
     @include('layouts.filter.filter-page')
     <div class="grid sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-10 mb-5">
-        @include('layouts.statistics.card-statistics', [
-            'title' => 'All Applications',
-            'value' => 202,
-            'icon' => 'images/icons/Vector1.png',
-            'iconBg' => 'bg-icon-purple',
-            'percentage' => null,
-            'period' => null,
-        ])
-        @include('layouts.statistics.card-statistics', [
-            'title' => 'Approved Applications',
-            'value' => 2356,
-            'icon' => 'images/icons/verification_4561680.png',
-            'iconBg' => 'bg-icon-green',
-            'percentage' => null,
-            'period' => null,
-        ])
-        @include('layouts.statistics.card-statistics', [
-            'title' => 'Pending Applications',
-            'value' => 2356,
-            'icon' => 'images/icons/quill_info.png',
-            'iconBg' => 'bg-icon-yellow',
-            'percentage' => null,
-            'period' => null,
-        ])
-        @include('layouts.statistics.card-statistics', [
-            'title' => 'Rejected Applications',
-            'value' => 202,
-            'icon' => 'images/icons/material-symbols_close-rounded.png',
-            'iconBg' => 'bg-icon-red',
-            'percentage' => null,
-            'period' => null,
-        ])
+@include('layouts.statistics.card-statistics', [
+    'title' => 'All Applications',
+    'value' => $totalApplications ?? 0,
+    'icon' => 'images/icons/Vector1.png',
+    'iconBg' => 'bg-icon-purple',
+    'percentage' => null,
+    'period' => null,
+])
+
+@include('layouts.statistics.card-statistics', [
+    'title' => 'Approved Applications',
+    'value' => $approvedApplications ?? 0,
+    'icon' => 'images/icons/verification_4561680.png',
+    'iconBg' => 'bg-icon-green',
+    'percentage' => null,
+    'period' => null,
+])
+
+@include('layouts.statistics.card-statistics', [
+    'title' => 'Pending Applications',
+    'value' => $pendingApplications ?? 0,
+    'icon' => 'images/icons/quill_info.png',
+    'iconBg' => 'bg-icon-yellow',
+    'percentage' => null,
+    'period' => null,
+])
+
+@include('layouts.statistics.card-statistics', [
+    'title' => 'Rejected Applications',
+    'value' => $rejectedApplications ?? 0,
+    'icon' => 'images/icons/material-symbols_close-rounded.png',
+    'iconBg' => 'bg-icon-red',
+    'percentage' => null,
+    'period' => null,
+])
 
     </div>
+    @include('layouts.message')
 
     <div class="space-y-6">
         <x-common.component-card title="Merchant Applications List">
@@ -111,8 +115,7 @@
                     </tbody>
                 </table>
 
-                {{-- Pagination Links --}}
-                <div class="mt-4">
+               <div class="m-4 flex justify-center">
                     {{ $applications->links() }}
                 </div>
             </div>

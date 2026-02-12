@@ -4,44 +4,37 @@
     <div class="grid sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-7 my-4">
         @include('layouts.statistics.card-statistics', [
             'title' => 'Merchants',
-            'value' => 202,
+            'value' => $totalMerchants,
             'icon' => 'images/icons/Vector.png',
             'iconBg' => 'bg-icon-green',
-            'percentage' => null,
-            'period' => null,
         ])
+
         @include('layouts.statistics.card-statistics', [
             'title' => 'Business Types',
-            'value' => 2356,
+            'value' => $totalBusinessTypes,
             'icon' => 'images/icons/money_6786436 1.png',
             'iconBg' => 'bg-icon-yellow',
-            'percentage' => null,
-            'period' => null,
         ])
+
         @include('layouts.statistics.card-statistics', [
             'title' => 'Branches',
-            'value' => 58458,
-            'icon' => null,
-            'iconBg' => null,
-            'percentage' => '+23%',
-            'period' => 'since Last Month',
+            'value' => $totalBranches,
         ])
+
         @include('layouts.statistics.card-statistics', [
             'title' => 'Employees',
-            'value' => 202,
+            'value' => $totalEmployees,
             'icon' => 'images/icons/employee_11803025 1.png',
             'iconBg' => 'bg-icon-green',
-            'percentage' => '+23%',
-            'period' => 'since Last Month',
         ])
+
         @include('layouts.statistics.card-statistics', [
             'title' => 'Tips',
-            'value' => '$2935',
+            'value' => '$' . number_format($totalTips, 2),
             'icon' => 'images/icons/Clip path group.png',
             'iconBg' => 'bg-icon-red',
-            'percentage' => null,
-            'period' => null,
         ])
+
 
     </div>
     <div class="grid grid-cols-3 gap-4 pb-4">
@@ -55,16 +48,18 @@
         </div>
 
     </div>
-    <div class="grid grid-cols-2 gap-4 pb-4">
+    <div class="grid grid-cols-3 gap-4 pb-4">
 
-        <div class="col-span-2 md:col-span-1">
-            <x-ecommerce.recent-employees />
+        <div class="col-span-3 md:col-span-2">
+           <x-ecommerce.recent-employees :employees="$recentEmployees" />
+
         </div>
-        <div class="col-span-2 md:col-span-1">
+        <div class="col-span-3 md:col-span-1">
             <div class="grid grid-cols-1 gap-4 pb-4">
-                <x-ecommerce.card-section title="0 Merchents This Month" />
-                <x-ecommerce.card-section title="0 Branches This Month" />
-                <x-ecommerce.card-section title="0 Employees This Month" />
+                <x-ecommerce.card-section title="{{ $merchantsThisMonth }} Merchants This Month" />
+                <x-ecommerce.card-section title="{{ $branchesThisMonth }} Branches This Month" />
+                <x-ecommerce.card-section title="{{ $employeesThisMonth }} Employees This Month" />
+
             </div>
         </div>
     </div>

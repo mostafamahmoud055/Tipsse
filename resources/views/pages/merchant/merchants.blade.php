@@ -7,27 +7,29 @@
 
         @include('layouts.statistics.card-statistics', [
             'title' => 'Total Merchants',
-            'value' => 202,
+            'value' => $totalMerchants ?? 0,
             'icon' => 'images/icons/Vector.png',
             'iconBg' => 'bg-icon-green',
-            'percentage' => '+23',
-            'period' => 'since last month',
+            'percentage' => null,
+            'period' => null,
         ])
+
         @include('layouts.statistics.card-statistics', [
             'title' => 'Active Branches',
-            'value' => 563,
+            'value' => $activeBranches ?? 0,
             'icon' => 'images/icons/tabler_check.png',
             'iconBg' => 'bg-icon-green',
-            'percentage' => '+23',
-            'period' => 'since last month',
+            'percentage' => null,
+            'period' => null,
         ])
+
         @include('layouts.statistics.card-statistics', [
             'title' => 'Not Active Branches',
-            'value' => 563,
+            'value' => $inactiveBranches ?? 0,
             'icon' => 'images/icons/material-symbols_close-rounded.png',
             'iconBg' => 'bg-icon-red',
-            'percentage' => '+23',
-            'period' => 'since last month',
+            'percentage' => null,
+            'period' => null,
         ])
     </div>
     @include('layouts.message')
@@ -80,7 +82,7 @@
                                         ];
                                     @endphp
                                     <span
-                                        class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $statusClasses[$app->merchant->is_active ] ?? 'bg-gray-50 text-gray-700 dark:bg-gray-500/15 dark:text-gray-500' }}">
+                                        class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $statusClasses[$app->merchant->is_active] ?? 'bg-gray-50 text-gray-700 dark:bg-gray-500/15 dark:text-gray-500' }}">
                                         {{ ucfirst($app->merchant->is_active) }}
                                     </span>
                                 </td>
@@ -101,19 +103,15 @@
 
 
                                             {{-- Delete --}}
-                                            <form method="POST" action="{{ route('merchants.delete', $app->id) }}"
-                                                onsubmit="return confirm('Are you sure?')" class="inline-flex">
-                                                @csrf
-                                                @method('DELETE')
 
-                                                <button type="submit"
-                                                    class="inline-flex items-center justify-center rounded
-                       bg-red-50 px-2.5 py-1.5
-                       text-red-700 hover:bg-red-100
-                       dark:bg-red-500/15 dark:text-red-400 dark:hover:bg-red-500/25">
-                                                    {!! menu_icon('delete-icon') !!}
-                                                </button>
-                                            </form>
+
+
+                                            <x-form.modals.confirm-delete
+                                                action="{{ route('merchants.delete', $app->id) }}" method="DELETE"
+                                                title="Delete Merchant"
+                                                message="Are you sure you want to delete the merchant '{{ $app->merchant?->name ?? 'N/A' }}'? This action cannot be undone.">
+                                                {!! menu_icon('delete-icon') !!}
+                                            </x-form.modals.confirm-delete>
                                         </div>
 
                                     </div>
@@ -124,13 +122,14 @@
                 </table>
 
                 {{-- Pagination Links --}}
-                <div class="mt-4">
-                    {{ $applications->links() }}
-                </div>
+
+                <div class="m-4 flex justify-center">
+    {{ $applications->onEachSide(1)->links('vendor.pagination.tailwind') }}
+</div>
+
             </div>
 
-            <!-- Pagination Info and Controls -->
-            @include('layouts.paginate')
+
     </div>
     </x-common.component-card>
     </div>

@@ -1,18 +1,20 @@
 @props([
     'ButtonName' => '',
     'modalTitle' => '',
-    'application' => null, // لو null = create
+    'application' => null,
     'updateStatus' => false,
 ])
 @php
     $isEdit = !is_null($application);
+    $modalId = $isEdit ? 'merchant-modal-' . $application->id : 'merchant-modal-create';
+    $all_business_type = \App\Models\BusinessType::all();
 @endphp
 
 <div class="border-t border-gray-100 dark:border-gray-800">
-    <div x-data="{ isModalOpen: false }">
+    <div x-data="{ open: false }" :id="'{{ $modalId }}'">
         @if (!$isEdit)
             <button class="menu-item-active h-fit w-full md:w-auto rounded-lg px-4 py-3 text-sm font-medium text-white"
-                @click="isModalOpen = !isModalOpen">
+                @click="open = true">
                 {{ $ButtonName }}
             </button>
         @else
@@ -21,18 +23,19 @@
               bg-yellow-50 px-2.5 py-1.5
               text-yellow-700 hover:bg-yellow-100
               dark:bg-yellow-500/15 dark:text-yellow-400 dark:hover:bg-yellow-500/25"
-                @click="isModalOpen = !isModalOpen">
+                @click="open = true">
                 {!! menu_icon('edit-icon') !!}
             </button>
         @endif
 
-        <div x-show="isModalOpen" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto modal z-99999"
-            style="display: none;">
-            <div class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
-            <div @click.outside="isModalOpen = false"
+        <div x-show="open" x-cloak
+            class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto modal z-99999">
+
+            <div class="fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]" @click="open = false"></div>
+            <div @click.outside="open = false"
                 class="relative w-full max-w-[584px] rounded-3xl bg-white p-6 dark:bg-gray-900 lg:p-10">
                 <!-- close btn -->
-                <button @click="isModalOpen = false"
+                <button @click="open = false"
                     class="group absolute right-3 top-3 z-999 flex h-9.5 w-9.5 items-center justify-center rounded-full bg-gray-200 text-gray-500 transition-colors hover:bg-gray-300 hover:text-gray-500 dark:bg-gray-800 dark:hover:bg-gray-700 sm:right-6 sm:top-6 sm:h-11 sm:w-11">
                     <svg class="transition-colors fill-current group-hover:text-gray-600 dark:group-hover:text-gray-200"
                         width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -90,25 +93,26 @@
                             </label>
                             <div x-data="{ isOptionSelected: false }" class="relative z-20 bg-transparent">
                                 <select required name="business_type"
-                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 
+    dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 
+    bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 
+    focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 
+    dark:text-white/90 dark:placeholder:text-white/30">
 
                                     <option disabled
                                         {{ old('business_type', $application?->merchant?->business_type) ? '' : 'selected' }}>
-                                        Select Type</option>
+                                        Select Type
+                                    </option>
 
-                                    <option value="Marketing"
-                                        {{ old('business_type', $application?->merchant?->business_type) == 'Marketing' ? 'selected' : '' }}>
-                                        Marketing
-                                    </option>
-                                    <option value="Template"
-                                        {{ old('business_type', $application?->merchant?->business_type) == 'Template' ? 'selected' : '' }}>
-                                        Template
-                                    </option>
-                                    <option value="Development"
-                                        {{ old('business_type', $application?->merchant?->business_type) == 'Development' ? 'selected' : '' }}>
-                                        Development
-                                    </option>
+                                    @foreach ($all_business_type as $type)
+                                        <option value="{{ $type->name }}"
+                                            {{ old('business_type', $application?->merchant?->business_type) == $type->name ? 'selected' : '' }}>
+                                            {{ $type->name }}
+                                        </option>
+                                    @endforeach
+
                                 </select>
+
 
                                 @error('business_type')
                                     <p class="mt-1 text-sm text-error-500">{{ $message }}</p>
@@ -154,32 +158,32 @@
                                 </div>
                             </div>
 
-                                                    <div>
+                            <div>
 
-                            <div x-data="{ switcherToggle: {{ old('is_active', $application?->merchant?->is_active ?? false) ? 'true' : 'false' }} }">
-                                <label
-                                    class="flex cursor-pointer items-center gap-3 text-sm font-medium text-gray-700 select-none dark:text-gray-400">
-                                    <div class="relative">
-                                        <input type="hidden" name="is_active" value="0">
-                                        <input type="checkbox" name="is_active" value="1" class="sr-only"
-                                            x-model="switcherToggle">
+                                <div x-data="{ switcherToggle: {{ old('is_active', $application?->merchant?->is_active ?? false) ? 'true' : 'false' }} }">
+                                    <label
+                                        class="flex cursor-pointer items-center gap-3 text-sm font-medium text-gray-700 select-none dark:text-gray-400">
+                                        <div class="relative">
+                                            <input type="hidden" name="is_active" value="0">
+                                            <input type="checkbox" name="is_active" value="1" class="sr-only"
+                                                x-model="switcherToggle">
 
-                                        <div class="block h-6 w-11 rounded-full"
-                                            :class="switcherToggle ? 'menu-item-active dark:bg-brand-400' :
-                                                'bg-gray-200 dark:bg-brand-400/10'">
+                                            <div class="block h-6 w-11 rounded-full"
+                                                :class="switcherToggle ? 'menu-item-active dark:bg-brand-400' :
+                                                    'bg-gray-200 dark:bg-brand-400/10'">
+                                            </div>
+
+                                            <div :class="switcherToggle ? 'translate-x-full' : 'translate-x-0'"
+                                                class="shadow-theme-sm absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white duration-300 ease-linear">
+                                            </div>
                                         </div>
+                                        Active
+                                    </label>
+                                </div>
 
-                                        <div :class="switcherToggle ? 'translate-x-full' : 'translate-x-0'"
-                                            class="shadow-theme-sm absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white duration-300 ease-linear">
-                                        </div>
-                                    </div>
-                                    Active
-                                </label>
+
+
                             </div>
-
-
-
-                        </div>
                         @else
                             {{--  Drop Down  --}}
                             <div class="col-span-2">
@@ -228,7 +232,7 @@
                     </div>
 
                     <div class="flex items-center justify-end w-full gap-3 mt-6">
-                        <button @click="isModalOpen = false" type="button"
+                        <button @click="open = false" type="button"
                             class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs transition-colors hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 sm:w-auto">
                             Close
                         </button>

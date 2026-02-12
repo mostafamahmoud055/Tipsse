@@ -1,3 +1,13 @@
+@php
+    $icon = $icon ?? null;
+    $iconBg = $iconBg ?? '';
+    $title = $title ?? '';
+    $value = $value ?? 0;
+    $percentage = $percentage ?? null;
+    $period = $period ?? null;
+@endphp
+
+
 <div class="flex justify-evenly items-center rounded-2xl border border-gray-200 bg-white  dark:bg-white/[0.03] py-4">
     @if ($icon)
         <div class="{{ $iconBg }} flex items-center justify-center w-18 h-18 rounded-full">

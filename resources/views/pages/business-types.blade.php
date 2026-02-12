@@ -33,23 +33,19 @@
                                         <div class="flex gap-2">
 
                                             {{-- Edit --}}
-                                            <x-form.modals.business-modal modalTitle='Edit Business Type' :type=$type />
+
+                                            <x-form.modals.business-modal modalTitle="Edit Business Type"
+                                                :type="$type" />
 
 
                                             {{-- Delete --}}
-                                            <form method="POST" action="{{ route('merchants.delete', $type->id) }}"
-                                                onsubmit="return confirm('Are you sure?')" class="inline-flex">
-                                                @csrf
-                                                @method('DELETE')
+                                            <x-form.modals.confirm-delete
+                                                action="{{ route('business_types.delete', $type->id) }}" method="DELETE"
+                                                title="Delete Business Type"
+                                                message="Are you sure you want to delete this business type? This action cannot be undone.">
+                                                {!! menu_icon('delete-icon') !!}
+                                                </x-confirm-delete>
 
-                                                <button type="submit"
-                                                    class="inline-flex items-center justify-center rounded
-                       bg-red-50 px-2.5 py-1.5
-                       text-red-700 hover:bg-red-100
-                       dark:bg-red-500/15 dark:text-red-400 dark:hover:bg-red-500/25">
-                                                    {!! menu_icon('delete-icon') !!}
-                                                </button>
-                                            </form>
                                         </div>
 
                                     </div>
@@ -59,9 +55,8 @@
                     </tbody>
                 </table>
 
-                {{-- Pagination Links --}}
-                <div class="mt-4">
-                    {{--  {{ $types->links() }}  --}}
+               <div class="m-4 flex justify-center">
+                    {{ $types->links() }}
                 </div>
             </div>
         </x-common.component-card>

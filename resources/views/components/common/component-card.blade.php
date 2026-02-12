@@ -19,16 +19,23 @@
 
         <!-- Filter & Button -->
         <div class="flex flex-col gap-3 w-full md:flex-row md:justify-end ">
-            @include('layouts.filter.filter-table')
+
 
             @if ($ButtonName)
                 @if ($ButtonName == 'Add Merchant')
                     <x-form.modals.merchant-modal :ButtonName=$ButtonName :modalTitle=$modalTitle />
                 @elseif($ButtonName == 'Add Business Type')
                     <x-form.modals.business-modal :ButtonName=$ButtonName :modalTitle=$modalTitle />
+                @elseif($ButtonName == 'Add Branch')
+                    <x-form.modals.branch-modal :ButtonName=$ButtonName :modalTitle=$modalTitle />
+                @elseif($ButtonName == 'Add Employee')
+                    <x-form.modals.employee-modal :ButtonName=$ButtonName :modalTitle=$modalTitle />
                 @endif
             @endif
         </div>
+    </div>
+    <div class="flex flex-col gap-3 w-full md:flex-row md:justify-end px-6">
+        @include('layouts.filter.filter-table')
     </div>
 
 

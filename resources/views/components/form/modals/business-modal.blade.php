@@ -1,17 +1,21 @@
 @props([
     'ButtonName' => '',
     'modalTitle' => '',
-    'type' => null, // لو null = create
+    'type' => null,
+    'updateStatus' => false,
 ])
 @php
     $isEdit = !is_null($type);
+    $modalId = $isEdit
+        ? 'type-modal-' . $type->id
+        : 'type-modal-create';
 @endphp
 
 <div class="border-t border-gray-100 dark:border-gray-800">
-    <div x-data="{ isModalOpen: false }">
+    <div x-data="{ open: false }" :id="'{{ $modalId }}'">
         @if (!$isEdit)
             <button class="menu-item-active h-fit w-full md:w-auto rounded-lg px-4 py-3 text-sm font-medium text-white"
-                @click="isModalOpen = !isModalOpen">
+                @click="open = true">
                 {{ $ButtonName }}
             </button>
         @else
@@ -20,18 +24,19 @@
               bg-yellow-50 px-2.5 py-1.5
               text-yellow-700 hover:bg-yellow-100
               dark:bg-yellow-500/15 dark:text-yellow-400 dark:hover:bg-yellow-500/25"
-                @click="isModalOpen = !isModalOpen">
+                @click="open = true">
                 {!! menu_icon('edit-icon') !!}
             </button>
         @endif
 
-        <div x-show="isModalOpen" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto modal z-99999"
-            style="display: none;">
-            <div class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
-            <div @click.outside="isModalOpen = false"
+        <div x-show="open" x-cloak
+            class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto modal z-99999">
+
+            <div class="fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]" @click="open = false"></div>
+            <div @click.outside="open = false"
                 class="relative w-full max-w-[584px] rounded-3xl bg-white p-6 dark:bg-gray-900 lg:p-10">
                 <!-- close btn -->
-                <button @click="isModalOpen = false"
+                <button @click="open = false"
                     class="group absolute right-3 top-3 z-999 flex h-9.5 w-9.5 items-center justify-center rounded-full bg-gray-200 text-gray-500 transition-colors hover:bg-gray-300 hover:text-gray-500 dark:bg-gray-800 dark:hover:bg-gray-700 sm:right-6 sm:top-6 sm:h-11 sm:w-11">
                     <svg class="transition-colors fill-current group-hover:text-gray-600 dark:group-hover:text-gray-200"
                         width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -55,23 +60,26 @@
                     <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
                         <div class="col-span-2">
                             <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                Business Name<span class="text-error-500">*</span>
+                                Business Type Name<span class="text-error-500">*</span>
                             </label>
-                            <input type="text" required name="name" placeholder="Startup"
+                            <input type="text" required name="name" placeholder="StartUp"
                                 value="{{ old('name', $type?->name) }}"
                                 class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800">
                         </div>
 
+
+
+
                     </div>
 
                     <div class="flex items-center justify-end w-full gap-3 mt-6">
-                        <button @click="isModalOpen = false" type="button"
+                        <button @click="open = false" type="button"
                             class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs transition-colors hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 sm:w-auto">
                             Close
                         </button>
                         <button type="submit"
                             class="menu-item-active h-fit w-full md:w-auto rounded-lg px-4 py-3 text-sm font-medium text-white">
-                            {{ $isEdit ? 'Update Business' : 'Create Business' }}
+                            {{ $isEdit ? 'Update Business type' : 'Create Business type' }}
                         </button>
                     </div>
                 </form>

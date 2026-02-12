@@ -3,19 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\BusinessType;
+use App\Services\BusinessTypeService;
 use Illuminate\Http\Request;
 
 class BusinessTypeController extends Controller
 {
-    public function index()
+    protected BusinessTypeService $service;
+
+    public function __construct(BusinessTypeService $service)
     {
-        $types = BusinessType::all();
-        return view('pages.business-types', compact('types'));
+        $this->service = $service;
     }
 
-    public function create()
+    public function index(Request $request)
     {
-        //
+        $filters = $request->only(['search', 'sort']);
+        $types = $this->service->getBusinessTypes($filters, 15);
+
+        return view('pages.business-types', compact('types'));
     }
 
     public function store(Request $request)
@@ -24,14 +29,10 @@ class BusinessTypeController extends Controller
             'name' => 'required|string|unique:business_types,name',
         ]);
 
-        BusinessType::create($request->all());
+        $this->service->createBusinessType($request->all());
 
-        return redirect()->route('business_types.index')->with('success', 'Business Type created successfully.');
-    }
-
-    public function edit(BusinessType $businessType)
-    {
-        //
+        return redirect()->route('business_types.index')
+            ->with('success', 'Business Type created successfully.');
     }
 
     public function update(Request $request, BusinessType $businessType)
@@ -40,15 +41,17 @@ class BusinessTypeController extends Controller
             'name' => 'required|string|unique:business_types,name,' . $businessType->id,
         ]);
 
-        $businessType->update($request->all());
+        $this->service->updateBusinessType($businessType, $request->all());
 
-        return redirect()->route('business_types.index')->with('success', 'Business Type updated successfully.');
+        return redirect()->route('business_types.index')
+            ->with('success', 'Business Type updated successfully.');
     }
 
-    public function destroy(BusinessType $businessType)
+    public function destroy(String $id)
     {
-        $businessType->delete();
+        $this->service->deleteBusinessType($id);
 
-        return redirect()->route('business_types.index')->with('success', 'Business Type deleted successfully.');
+        return redirect()->route('business_types.index')
+            ->with('success', 'Business Type deleted successfully.');
     }
 }
