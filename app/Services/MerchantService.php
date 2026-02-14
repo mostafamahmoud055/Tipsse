@@ -13,47 +13,47 @@ use Illuminate\Validation\ValidationException;
 
 class MerchantService
 {
-public function getApplications(int $perPage = 15)
-{
-    $query = MerchantApplication::with(['user', 'merchant']);
+    public function getApplications(int $perPage = 15)
+    {
+        $query = MerchantApplication::with(['user', 'merchant']);
 
-    // ==== فلتر بالبحث عن اسم المستخدم ====
-    if ($search = request('search')) {
-        $query->whereHas('user', function ($q) use ($search) {
-            $q->where('name', 'like', "%{$search}%");
-        });
-    }
-
-    // ==== فلتر بالـ status ====
-    if ($status = request('status')) {
-        $query->where('status', $status);
-    }
-
-    // ==== فلتر بالـ is_active للـ merchant ====
-    if (!is_null(request('is_active'))) {
-        $query->whereHas('merchant', function ($q) {
-            $q->where('is_active', request('is_active'));
-        });
-    }
-
-    // ==== فلتر بالتاريخ ====
-    if ($date = request('date_pick')) {
-        $query->whereDate('created_at', $date);
-    }
-
-    // ==== فلتر بالترتيب ====
-    if ($sort = request('sort')) {
-        if ($sort === 'newest') {
-            $query->orderBy('created_at', 'desc');
-        } elseif ($sort === 'oldest') {
-            $query->orderBy('created_at', 'asc');
+        // ==== فلتر بالبحث عن اسم المستخدم ====
+        if ($search = request('search')) {
+            $query->whereHas('user', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%");
+            });
         }
-    } else {
-        $query->orderBy('created_at', 'desc'); // ترتيب افتراضي
-    }
 
-    return $query->paginate($perPage)->withQueryString();
-}
+        // ==== فلتر بالـ status ====
+        if ($status = request('status')) {
+            $query->where('status', $status);
+        }
+
+        // ==== فلتر بالـ is_active للـ merchant ====
+        if (!is_null(request('is_active'))) {
+            $query->whereHas('merchant', function ($q) {
+                $q->where('is_active', request('is_active'));
+            });
+        }
+
+        // ==== فلتر بالتاريخ ====
+        if ($date = request('date_pick')) {
+            $query->whereDate('created_at', $date);
+        }
+
+        // ==== فلتر بالترتيب ====
+        if ($sort = request('sort')) {
+            if ($sort === 'newest') {
+                $query->orderBy('created_at', 'desc');
+            } elseif ($sort === 'oldest') {
+                $query->orderBy('created_at', 'asc');
+            }
+        } else {
+            $query->orderBy('created_at', 'desc'); // ترتيب افتراضي
+        }
+
+        return $query->paginate($perPage)->withQueryString();
+    }
 
 
     /**
@@ -271,9 +271,8 @@ public function getApplications(int $perPage = 15)
     /**
      * Delete a merchant application
      */
-    public function deleteApplication( $id)
+    public function deleteApplication($id)
     {
-        // يمكنك إضافة أي عمليات تحقق إضافية هنا إذا احتجت
-       return MerchantApplication::find($id)->delete();
+        return MerchantApplication::find($id)->delete();
     }
 }
