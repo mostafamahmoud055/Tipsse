@@ -23,6 +23,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/search-merchant-owners', [BranchController::class, 'searchOwners'])
         ->name('branches.search-owners');
 
-        Route::get('/merchants/{merchant}/branches', [BranchController::class, 'branches']) ->name('branches.search');
-
+    Route::get('/merchants/{merchant}/branches', [BranchController::class, 'branches'])->name('branches.search');
 });

@@ -2,7 +2,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmployeeController;
 
-Route::prefix('employees')->name('employees.')->group(function () {
+Route::middleware(['auth', 'verified'])->prefix('employees')->name('employees.')->group(function () {
     Route::get('/', [EmployeeController::class, 'index'])->name('index');
     Route::post('/', [EmployeeController::class, 'store'])->name('store');
     Route::get('/{employee}', [EmployeeController::class, 'show'])

@@ -15,6 +15,12 @@ class BranchService
     {
         $query = Branch::with('merchant');
 
+        $user = auth()->user();
+
+        if ($user->role === 'merchant_owner') {
+            $query->where('merchant_id', $user->merchant?->user_id);
+        }
+
         // ==== Search ====
         if (!empty($filters['search'])) {
             $search = $filters['search'];

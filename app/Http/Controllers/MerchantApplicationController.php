@@ -21,7 +21,6 @@ class MerchantApplicationController extends Controller
     {
         $applications = $this->merchantService->getApplications(15);
 
-        // صفحة طلبات التاجر
         if (request()->routeIs('merchant-application')) {
             $stats = $this->merchantService->getApplicationStats();
             return view('pages.merchant-application', [
@@ -33,14 +32,12 @@ class MerchantApplicationController extends Controller
             ]);
         }
 
-        // صفحة العقود
         if (request()->routeIs('contracts')) {
             return view('pages.contracts', [
                 'applications' => $applications,
             ]);
         }
 
-        // باقي صفحات التجار
         $stats = $this->merchantService->getMerchantBranchStats();
         return view('pages.merchant.merchants', array_merge([
             'applications' => $applications,

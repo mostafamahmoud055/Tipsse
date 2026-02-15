@@ -6,34 +6,41 @@ class MenuHelper
 {
     public static function getMainNavItems()
     {
-        return [
+
+        $user = auth()->user();
+
+        return collect([
             [
                 'icon' => 'dashboard',
                 'name' => 'Dashboard',
                 'path' => '/',
-                // 'subItems' => [
-                //     ['name' => 'Ecommerce', 'path' => '/'],
-                // ],
             ],
             [
                 'icon' => 'ecommerce',
                 'name' => 'Merchant Application',
                 'path' => '/merchant-application',
+                'roles' => ['admin', 'super_admin'],
             ],
             [
                 'icon' => 'forms',
                 'name' => 'Contracts',
                 'path' => '/contracts',
+                'roles' => ['admin', 'super_admin'],
+
             ],
             [
                 'icon' => 'user-profile',
                 'name' => 'Merchants',
                 'path' => '/Merchants',
+                'roles' => ['admin', 'super_admin'],
+
             ],
             [
                 'icon' => 'business',
                 'name' => 'Business Types',
                 'path' => '/business-types',
+                'roles' => ['admin', 'super_admin'],
+
             ],
             [
                 'icon' => 'calendar',
@@ -53,6 +60,7 @@ class MenuHelper
             [
                 'icon' => 'settings',
                 'name' => 'Settings',
+                'roles' => ['admin', 'super_admin'],
 
                 'subItems' => [
                     ['name' => 'Merchant Contract', 'path' => '/settings', 'icon' => 'user'],
@@ -63,22 +71,15 @@ class MenuHelper
                 'name' => 'Sign Out',
                 'path' => '/logout',
             ],
-            // [
-            //     'name' => 'Tables',
-            //     'icon' => 'tables',
-            //     'subItems' => [
-            //         ['name' => 'Basic Tables', 'path' => '/basic-tables', 'pro' => false]
-            //     ],
-            // ],
-            // [
-            //     'name' => 'Pages',
-            //     'icon' => 'pages',
-            //     'subItems' => [
-            //         ['name' => 'Blank Page', 'path' => '/blank', 'pro' => false],
-            //         ['name' => '404 Error', 'path' => '/error-404', 'pro' => false]
-            //     ],
-            // ],
-        ];
+
+        ])->filter(function ($item) use ($user) {
+
+            if (!isset($item['roles'])) return true;
+
+            return in_array($user->role, $item['roles']);
+        })
+            ->values()
+            ->toArray();
     }
 
     public static function getOthersItems()

@@ -12,7 +12,7 @@
         </div>
 
         <div class="flex items-center gap-3">
-            <a href="{{ route('employees.index') }}"
+            <a href="{{ route('branches.index') }}"
                class="text-brand-400 inline-flex items-center py-2.5 font-medium">
                 <span class="whitespace-nowrap">See More</span>
                 {!! menu_icon('narrow-right-arrow') !!}

@@ -56,9 +56,6 @@ class MerchantService
     }
 
 
-    /**
-     * احصائيات الطلبات
-     */
     public function getApplicationStats()
     {
         return MerchantApplication::selectRaw("
@@ -69,9 +66,6 @@ class MerchantService
         ")->first();
     }
 
-    /**
-     * احصائيات التجار والفروع
-     */
     public function getMerchantBranchStats()
     {
         $merchantStats = Merchant::selectRaw("COUNT(*) as total")->first();
@@ -86,9 +80,7 @@ class MerchantService
             'inactiveBranches' => $branchStats->inactive,
         ];
     }
-    /**
-     * Apply for merchant (Create merchant + application)
-     */
+
     public function apply(array $data, $user): MerchantApplication
     {
         return DB::transaction(function () use ($data, $user) {
@@ -116,9 +108,7 @@ class MerchantService
         });
     }
 
-    /**
-     * Approve merchant application
-     */
+
     public function approve(MerchantApplication $application): bool
     {
         return DB::transaction(function () use ($application) {
@@ -144,9 +134,6 @@ class MerchantService
         });
     }
 
-    /**
-     * Reject merchant application
-     */
     public function reject(MerchantApplication $application, string $reason): bool
     {
         return DB::transaction(function () use ($application, $reason) {
@@ -164,9 +151,7 @@ class MerchantService
         });
     }
 
-    /**
-     * Generate unique application number
-     */
+
     private function generateApplicationNumber(): string
     {
         return 'APP-' . strtoupper(Str::random(10));
@@ -268,9 +253,8 @@ class MerchantService
             return $application->refresh();
         });
     }
-    /**
-     * Delete a merchant application
-     */
+
+    
     public function deleteApplication($id)
     {
         return MerchantApplication::find($id)->delete();

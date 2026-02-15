@@ -23,7 +23,6 @@ class EmployeeController extends Controller
         return view('pages.employee.employees', compact('employees'));
     }
 
-    // صفحة إضافة موظف جديد
     public function show(Employee $employee)
     {
 
@@ -31,7 +30,6 @@ class EmployeeController extends Controller
         return view('pages.employee.show-employee', compact('employee'));
     }
 
-    // تخزين الموظف الجديد
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -80,7 +78,6 @@ class EmployeeController extends Controller
         return redirect()->route('employees.index')->with('success', 'Employee updated successfully');
     }
 
-    // حذف الموظف
     public function destroy($id)
     {
         $this->service->delete($id);

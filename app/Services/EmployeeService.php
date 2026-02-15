@@ -10,20 +10,22 @@ class EmployeeService
     {
         $query = Employee::with(['merchant', 'branch']);
 
-        // فلترة بالبحث
+        $user = auth()->user();
+
+        if ($user->role === 'merchant_owner') {
+            $query->where('merchant_id', $user->merchant?->user_id);
+        }
+
         if (!empty($filters['search'])) {
             $query->where('name', 'like', "%{$filters['search']}%");
         }
-    // ==== فلتر بالـ Status ====
-    if (isset($filters['is_active']) && $filters['is_active'] !== '') {
-        $query->where('is_active', $filters['is_active']);
-    }
+        if (isset($filters['is_active']) && $filters['is_active'] !== '') {
+            $query->where('is_active', $filters['is_active']);
+        }
 
-    // ==== فلتر بالـ Date ====
-    if (!empty($filters['date_pick'])) {
-        $query->whereDate('created_at', $filters['date_pick']);
-    }
-        // ترتيب حسب الاختيار
+        if (!empty($filters['date_pick'])) {
+            $query->whereDate('created_at', $filters['date_pick']);
+        }
         if (!empty($filters['sort'])) {
             if ($filters['sort'] === 'newest') {
                 $query->latest();
@@ -31,7 +33,7 @@ class EmployeeService
                 $query->oldest();
             }
         } else {
-            $query->latest(); // افتراضي
+            $query->latest();
         }
 
         return $query->paginate($perPage)->withQueryString();

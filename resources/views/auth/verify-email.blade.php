@@ -9,7 +9,8 @@
                         Verify your email </h1>
 
                     @if (session('status') == 'verification-link-sent')
-                        <div class="alert alert-success">
+                        <div
+                            class=" py-4 text-sm text-green-700 dark:text-green-400">
                             A new verification link has been sent to your email.
                         </div>
                     @endif
@@ -34,8 +35,8 @@
                     </form>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button class="                                    class="text-gray-700 hover:text-brand-400 dark:text-brand-400 text-sm">
-" type="submit">Logout</button>
+                        <button
+                            class="text-gray-700 hover:text-brand-400 dark:text-brand-400 text-sm"type="submit">Logout</button>
                     </form>
                 </div>
             </div>

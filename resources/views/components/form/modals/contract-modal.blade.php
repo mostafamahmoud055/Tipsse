@@ -62,7 +62,7 @@
                             {{--  Drop Down  --}}
                             <div class="col-span-2">
                                 <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                    Business Type<span class="text-error-500">*</span>
+                                    Status<span class="text-error-500">*</span>
                                 </label>
                                 <div x-data="{ isOptionSelected: false }" class="relative z-20 bg-transparent">
                                     <select required name="status"
