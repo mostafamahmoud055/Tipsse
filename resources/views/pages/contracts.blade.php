@@ -27,19 +27,19 @@
                         @foreach ($applications as $app)
                             <tr class="hover:bg-gray-50 dark:hover:bg-white/5">
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
-                                    M - {{ $app->merchant->id }}
+                                    M - {{ $app->user->id }}
                                 </td>
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
                                     {{ $app->user->name }}
                                 </td>
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
-                                    {{ $app->merchant->business_type }}
+                                    {{ $app->user->business_type }}
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
                                     {{ $app->user->email }}
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
-                                    {{ $app->merchant->phone ?? '-' }}
+                                    {{ $app->user->phone ?? '-' }}
                                 </td>
                                 <td class="px-6 py-4 text-sm">
                                     @php

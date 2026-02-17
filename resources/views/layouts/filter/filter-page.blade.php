@@ -5,7 +5,7 @@
             1 => 'Active',
             0 => 'In Active',
         ]"
-            class="col-span-3 md:col-span-2" :value="request('is_active')" {{-- يحافظ على القيمة بعد الـ submit --}} />
+            class="col-span-3 md:col-span-2" :value="request('is_active')"  />
 
         {{-- Date Picker --}}
         <x-form.date-picker id="date_pick" name="date_pick" placeholder="Date Picker" :defaultDate="request('date_pick')"

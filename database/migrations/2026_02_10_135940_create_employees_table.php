@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('national_id');
 
             // Relational fields
-            $table->foreignId('merchant_id')
+            $table->foreignId('user_id')
                 ->constrained()
                 ->cascadeOnDelete();
             $table->foreignId('branch_id')

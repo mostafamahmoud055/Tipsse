@@ -41,7 +41,7 @@
                                 <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
                                     {{ $employee->national_id ?? '-' }}</td>
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
-                                    {{ $employee->merchant?->name ?? '-' }}</td>
+                                    {{ $employee->user?->name ?? '-' }}</td>
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
                                     {{ $employee->branch?->name ?? '-' }}</td>
                                 <td class="px-6 py-4 text-sm">
@@ -60,7 +60,7 @@
                                     {{ $employee->created_at->format('Y M d') }}</td>
                                 <td class="px-6 py-4">
                                     <div class="flex gap-2">
-                                        <a href="{{ route('branches.show', $employee->id) }}"
+                                        <a href="{{ route('employees.show', $employee->id) }}"
                                             class="inline-flex items-center justify-center rounded bg-blue-50 px-2.5 py-1.5 text-blue-700 hover:bg-blue-100 dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25">
                                             {!! menu_icon('view-icon') !!}
                                         </a>
@@ -68,7 +68,7 @@
                                         <x-form.modals.employee-modal modalTitle='Edit Employee' :employee="$employee" />
 
                                         <x-form.modals.confirm-delete
-                                            action="{{ route('branches.delete', $employee->id) }}" method="DELETE"
+                                            action="{{ route('employees.delete', $employee->id) }}" method="DELETE"
                                             title="Delete Employee"
                                             message="Are you sure you want to delete the employee '{{ $employee->name }}'? This action cannot be undone.">
                                             {!! menu_icon('delete-icon') !!}

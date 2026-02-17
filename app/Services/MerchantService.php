@@ -2,55 +2,68 @@
 
 namespace App\Services;
 
-use App\Models\User;
 use App\Models\Branch;
-use App\Models\Merchant;
+use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Models\MerchantApplication;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 
 class MerchantService
 {
+
+    private function baseApplicationQuery()
+    {
+        $query = MerchantApplication::query();
+
+        $user = auth()->user();
+
+        if ($user->role === 'merchant_owner') {
+            $query->where('user_id', $user->id);
+        }
+
+        return $query;
+    }
+
     public function getApplications(int $perPage = 15)
     {
-        $query = MerchantApplication::with(['user', 'merchant']);
+        $query = $this->baseApplicationQuery()->with(['user']);
 
-        // ==== فلتر بالبحث عن اسم المستخدم ====
-        if ($search = request('search')) {
-            $query->whereHas('user', function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%");
-            });
-        }
+        $query
+            ->when(request('search'), function ($q, $search) {
+                $q->whereHas(
+                    'user',
+                    fn($uq) =>
+                    $uq->where('name', 'like', "%{$search}%")
+                );
+            })
 
-        // ==== فلتر بالـ status ====
-        if ($status = request('status')) {
-            $query->where('status', $status);
-        }
+            ->when(
+                request('status'),
+                fn($q, $status) =>
+                $q->where('status', $status)
+            )
 
-        // ==== فلتر بالـ is_active للـ merchant ====
-        if (!is_null(request('is_active'))) {
-            $query->whereHas('merchant', function ($q) {
-                $q->where('is_active', request('is_active'));
-            });
-        }
+            ->when(!is_null(request('is_active')), function ($q) {
+                $q->whereHas(
+                    'user',
+                    fn($mq) =>
+                    $mq->where('is_active', request('is_active'))
+                );
+            })
 
-        // ==== فلتر بالتاريخ ====
-        if ($date = request('date_pick')) {
-            $query->whereDate('created_at', $date);
-        }
+            ->when(
+                request('date_pick'),
+                fn($q, $date) =>
+                $q->whereDate('created_at', $date)
+            )
 
-        // ==== فلتر بالترتيب ====
-        if ($sort = request('sort')) {
-            if ($sort === 'newest') {
-                $query->orderBy('created_at', 'desc');
-            } elseif ($sort === 'oldest') {
-                $query->orderBy('created_at', 'asc');
-            }
-        } else {
-            $query->orderBy('created_at', 'desc'); // ترتيب افتراضي
-        }
+            ->when(
+                request('sort') === 'oldest',
+                fn($q) => $q->orderBy('created_at', 'asc'),
+                fn($q) => $q->orderBy('created_at', 'desc')
+            );
+
 
         return $query->paginate($perPage)->withQueryString();
     }
@@ -58,8 +71,8 @@ class MerchantService
 
     public function getApplicationStats()
     {
-        return MerchantApplication::selectRaw("
-            COUNT(*) as total,
+        return $this->baseApplicationQuery()
+            ->selectRaw("COUNT(*) as total,
             SUM(CASE WHEN status = 'approved' THEN 1 ELSE 0 END) as approved,
             SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending,
             SUM(CASE WHEN status = 'rejected' THEN 1 ELSE 0 END) as rejected
@@ -68,8 +81,19 @@ class MerchantService
 
     public function getMerchantBranchStats()
     {
-        $merchantStats = Merchant::selectRaw("COUNT(*) as total")->first();
-        $branchStats   = Branch::selectRaw("
+        $user = auth()->user();
+
+        $merchantQuery = User::query();
+        $branchQuery   = Branch::query();
+
+        if ($user->role === 'merchant_owner') {
+            $merchantQuery->where('id', $user->id);
+            $branchQuery->where('user_id', $user->id);
+        }
+
+        $merchantStats = $merchantQuery->selectRaw("COUNT(*) as total")->first();
+
+        $branchStats = $branchQuery->selectRaw("
             SUM(CASE WHEN is_active = 1 THEN 1 ELSE 0 END) as active,
             SUM(CASE WHEN is_active = 0 THEN 1 ELSE 0 END) as inactive
         ")->first();
@@ -81,108 +105,35 @@ class MerchantService
         ];
     }
 
-    public function apply(array $data, $user): MerchantApplication
-    {
-        return DB::transaction(function () use ($data, $user) {
-
-            if ($user->merchant || $user->merchantApplication) {
-                throw ValidationException::withMessages([
-                    'merchant' => 'You already have an existing merchant application.',
-                ]);
-            }
-
-            $merchant = Merchant::create([
-                'business_name' => $data['business_name'],
-                'email'         => $user->email,
-                'phone'         => $data['phone'] ?? null,
-                'user_id'       => $user->id,
-                'is_active'     => false,
-            ]);
-
-            return MerchantApplication::create([
-                'merchant_id'        => $merchant->id,
-                'user_id'            => $user->id,
-                'application_number' => $this->generateApplicationNumber(),
-                'status'             => 'pending',
-            ]);
-        });
-    }
-
-
-    public function approve(MerchantApplication $application): bool
-    {
-        return DB::transaction(function () use ($application) {
-
-            if ($application->status !== 'pending') {
-                throw new \Exception('Application already processed.');
-            }
-
-            $application->update([
-                'status' => 'approved',
-                'rejection_reason' => null,
-            ]);
-
-            $application->merchant->update([
-                'is_active' => true,
-            ]);
-
-            $application->user->update([
-                'status' => 'active',
-            ]);
-
-            return true;
-        });
-    }
-
-    public function reject(MerchantApplication $application, string $reason): bool
-    {
-        return DB::transaction(function () use ($application, $reason) {
-
-            if ($application->status !== 'pending') {
-                throw new \Exception('Application already processed.');
-            }
-
-            $application->update([
-                'status' => 'rejected',
-                'rejection_reason' => $reason,
-            ]);
-
-            return true;
-        });
-    }
-
 
     private function generateApplicationNumber(): string
     {
         return 'APP-' . strtoupper(Str::random(10));
     }
 
-    public function createNewMerchant(array $data): MerchantApplication
+    public function createNewMerchant(array $data)
     {
-
         return DB::transaction(function () use ($data) {
             $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => Hash::make($data['password']),
                 'role' => 'merchant_owner',
-                'status' => $data['status'] ?? 'inactive',
-            ]);
-
-            $merchant = Merchant::create([
-                'name' => $data['name'],
                 'phone' => $data['phone'] ?? null,
-                'user_id' => $user->id,
-                'business_type' => $data['business_type'],
-                'is_active' => $data['is_active'],
+                'business_type' => $data['business_type'] ?? 'service',
+                'national_id' => $data['national_id'] ?? null,
+                'is_active' => $data['is_active'] ?? true,
             ]);
 
-            return MerchantApplication::create([
-                'merchant_id' => $merchant->id,
+
+
+            MerchantApplication::create([
+                'user_id' => $user->id,
                 'user_id' => $user->id,
                 'application_number' => $this->generateApplicationNumber(),
                 'status' => 'pending',
             ]);
+            return $user;
         });
     }
 
@@ -191,7 +142,6 @@ class MerchantService
         return DB::transaction(function () use ($application, $data) {
 
             $user = $application->user;
-            $merchant = $application->merchant;
 
             /*
         |--------------------------------------------------------------------------
@@ -247,16 +197,16 @@ class MerchantService
             }
 
             if (!empty($merchantData)) {
-                $merchant->update($merchantData);
+                $user->update($merchantData);
             }
 
             return $application->refresh();
         });
     }
 
-    
-    public function deleteApplication($id)
+
+    public function deleteMerchant($id)
     {
-        return MerchantApplication::find($id)->delete();
+        return User::find($id)->delete();
     }
 }

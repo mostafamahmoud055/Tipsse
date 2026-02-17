@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\Employee;
 use App\Services\EmployeeService;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class EmployeeController extends Controller
 {
@@ -26,7 +28,7 @@ class EmployeeController extends Controller
     public function show(Employee $employee)
     {
 
-        $employee->load(['merchant']);
+        $employee->load(['user']);
         return view('pages.employee.show-employee', compact('employee'));
     }
 
@@ -37,7 +39,7 @@ class EmployeeController extends Controller
             'email' => 'required|email|unique:employees,email',
             'phone' => 'nullable|string|max:20',
             'national_id' => 'required|string|max:50',
-            'merchant_id' => 'required|exists:merchants,id',
+            'user_id' => 'required|exists:users,id',
             'branch_id' => 'required|exists:branches,id',
             'is_active' => 'nullable|boolean',
         ]);
@@ -63,10 +65,14 @@ class EmployeeController extends Controller
 
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:employees,email,' . $employee->id,
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('employees', 'email')->ignore($employee->id),
+            ],
             'phone' => 'nullable|string|max:20',
             'national_id' => 'nullable|string|max:50',
-            'merchant_id' => 'required|exists:merchants,id',
+            'user_id' => 'required|exists:users,id',
             'branch_id' => 'required|exists:branches,id',
             'is_active' => 'nullable|boolean',
         ]);

@@ -82,10 +82,11 @@
                                 Phone
                             </label>
                             <input type="text" required name="phone" placeholder="+09 363 398 46"
-                                value="{{ old('phone', $application?->merchant?->phone) }}"
+                                value="{{ old('phone', $application?->user?->phone) }}"
                                 class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800">
 
                         </div>
+
                         {{--  Drop Down  --}}
                         <div class="col-span-2">
                             <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
@@ -100,13 +101,13 @@
     dark:text-white/90 dark:placeholder:text-white/30">
 
                                     <option disabled
-                                        {{ old('business_type', $application?->merchant?->business_type) ? '' : 'selected' }}>
+                                        {{ old('business_type', $application?->user?->business_type) ? '' : 'selected' }}>
                                         Select Type
                                     </option>
 
                                     @foreach ($all_business_type as $type)
                                         <option value="{{ $type->name }}"
-                                            {{ old('business_type', $application?->merchant?->business_type) == $type->name ? 'selected' : '' }}>
+                                            {{ old('business_type', $application?->user?->business_type) == $type->name ? 'selected' : '' }}>
                                             {{ $type->name }}
                                         </option>
                                     @endforeach
@@ -129,7 +130,16 @@
                                 </span>
                             </div>
                         </div>
+
                         @if (!$updateStatus)
+                                                <div class="col-span-2">
+                            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                                National id<span class="text-error-500">*</span>
+                            </label>
+                            <input type="text" required name="national_id" placeholder="1234567890"
+                                value="{{ old('national_id', $application?->user?->national_id) }}"
+                                class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800">
+                        </div>
                             <div class="col-span-2">
                                 <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                                     Password<span class="text-error-500">*</span>
@@ -160,7 +170,7 @@
 
                             <div>
 
-                                <div x-data="{ switcherToggle: {{ old('is_active', $application?->merchant?->is_active ?? false) ? 'true' : 'false' }} }">
+                                <div x-data="{ switcherToggle: {{ old('is_active', $application?->user?->is_active ?? false) ? 'true' : 'false' }} }">
                                     <label
                                         class="flex cursor-pointer items-center gap-3 text-sm font-medium text-gray-700 select-none dark:text-gray-400">
                                         <div class="relative">
@@ -182,13 +192,12 @@
                                 </div>
 
 
-
                             </div>
                         @else
                             {{--  Drop Down  --}}
                             <div class="col-span-2">
                                 <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                    Business Type<span class="text-error-500">*</span>
+                                    Contract Status<span class="text-error-500">*</span>
                                 </label>
                                 <div x-data="{ isOptionSelected: false }" class="relative z-20 bg-transparent">
                                     <select required name="status"

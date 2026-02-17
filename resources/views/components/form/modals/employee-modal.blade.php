@@ -8,7 +8,7 @@
         $isAdmin = auth()->user()->role == 'super_admin';
         $isEdit = !is_null($employee);
         $modalId = $isEdit ? 'employee-modal-' . $employee->id : 'employee-modal-create';
-        $merchant_branches = $isAdmin ? $employee?->merchant?->branches : auth()->user()->merchant?->branches;
+        $merchant_branches = $isAdmin ? $employee?->user?->branches : auth()->user()?->branches;
         $inputId = 'merchant-search-' . $modalId;
         $resultsId = 'merchant-results-' . $modalId;
     @endphp
@@ -96,11 +96,11 @@
                                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                                         Merchant<span class="text-error-500">*</span>
                                     </label>
-                                    <input type="hidden" name="merchant_id" id="merchant_id-{{ $modalId }}"
-                                        value="{{ old('merchant_id', $employee?->merchant?->user_id) }}">
+                                    <input type="hidden" name="user_id" id="user_id-{{ $modalId }}"
+                                        value="{{ old('user_id', $employee?->user?->id) }}">
                                     <input type="text" id="{{ $inputId }}" placeholder="Search merchant owner..."
                                         name="merchant_name"
-                                        value="{{ old('merchant_name', $employee?->merchant?->name) }}"
+                                        value="{{ old('merchant_name', $employee?->user?->name) }}"
                                         class="h-11 w-full rounded-lg border border-gray-300 px-4 text-sm focus:border-brand-400 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white" />
                                     <ul id="{{ $resultsId }}"
                                         class="absolute z-50 mt-1 hidden w-full rounded-lg border border-gray-200 bg-white shadow dark:border-gray-700 dark:bg-gray-900">
@@ -128,8 +128,8 @@
                                     </select>
                                 </div>
                             @else
-                                <input type="hidden" name="merchant_id" id="merchant_id-{{ $modalId }}"
-                                    value="{{ old('merchant_id', auth()->user()->merchant?->user_id) }}">
+                                <input type="hidden" name="user_id" id="user_id-{{ $modalId }}"
+                                    value="{{ old('user_id', auth()->user()?->id) }}">
 
                                 <div class="col-span-2">
                                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
@@ -207,7 +207,7 @@
             const input = document.getElementById('{{ $inputId }}'); // input search للـ Merchant
             const results = document.getElementById('{{ $resultsId }}'); // قائمة النتائج
             const hidden = document.getElementById(
-                'merchant_id-{{ $modalId }}'); // hidden field لتخزين الـ Merchant ID
+                'user_id-{{ $modalId }}'); // hidden field لتخزين الـ Merchant ID
             const branchSelect = document.getElementById('branch-select-{{ $modalId }}'); // select للفروع
             let timer;
 

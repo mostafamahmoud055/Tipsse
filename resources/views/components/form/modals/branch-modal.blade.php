@@ -105,18 +105,18 @@
                                 <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                                     Merchant<span class="text-error-500">*</span>
                                 </label>
-                                <input type="hidden" name="merchant_id" id="merchant_id-{{ $modalId }}"
-                                    value="{{ old('merchant_id', $branch?->merchant?->user_id) }}">
+                                <input type="hidden" name="user_id" id="user_id-{{ $modalId }}"
+                                    value="{{ old('user_id', $branch?->user?->id) }}">
                                 <input type="text" id="{{ $inputId }}" placeholder="Search merchant owner..."
-                                    name="merchant_name" value="{{ old('merchant_name', $branch?->merchant?->name) }}"
+                                    name="merchant_name" value="{{ old('merchant_name', $branch?->user?->name) }}"
                                     class="h-11 w-full rounded-lg border border-gray-300 px-4 text-sm focus:border-brand-400 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white" />
                                 <ul id="{{ $resultsId }}"
                                     class="absolute z-50 mt-1 hidden w-full rounded-lg border border-gray-200 bg-white shadow dark:border-gray-700 dark:bg-gray-900">
                                 </ul>
                             </div>
                         @else
-                            <input type="hidden" name="merchant_id" id="merchant_id-{{ $modalId }}"
-                                value="{{ old('merchant_id', auth()->user()->merchant?->user_id) }}">
+                            <input type="hidden" name="user_id" id="user_id-{{ $modalId }}"
+                                value="{{ old('user_id', auth()->user()?->id) }}">
                         @endcan
 
                         {{-- Active --}}
@@ -203,7 +203,7 @@
         (function() {
             const input = document.getElementById('{{ $inputId }}');
             const results = document.getElementById('{{ $resultsId }}');
-            const hidden = document.getElementById('merchant_id-{{ $modalId }}');
+            const hidden = document.getElementById('user_id-{{ $modalId }}');
             let timer;
 
             if (!input || !results || !hidden) return;

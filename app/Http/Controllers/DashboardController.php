@@ -2,23 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\Branch;
 use App\Models\BusinessType;
 use App\Models\Employee;
-use App\Models\Merchant;
-use Illuminate\Support\Carbon;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $now = Carbon::now();
+        $now = now();
 
         $startOfMonth = $now->copy()->startOfMonth();
-        $endOfMonth = $now->copy()->endOfMonth();
+        $endOfMonth   = $now->copy()->endOfMonth();
 
-        $user = auth()->user();
-        $merchantId = $user->merchant?->user_id;
+        $user       = auth()->user();
+        $merchantId = $user->id;
+        $isMerchant = $user->role === 'merchant_owner';
 
         /*
     |--------------------------------------------------------------------------
@@ -26,20 +27,20 @@ class DashboardController extends Controller
     |--------------------------------------------------------------------------
     */
 
-        $merchantsQuery = Merchant::query();
+        $merchantsQuery = User::query();
         $branchesQuery  = Branch::query();
         $employeesQuery = Employee::query();
 
-        // ✅ لو Merchant → يشوف بياناته بس
-        if ($user->role === 'merchant_owner') {
+        if ($isMerchant) {
+            $merchantsQuery->whereKey($merchantId);
 
-            $merchantsQuery->where('user_id', $merchantId);
+            $branchesQuery->where('user_id', $merchantId);
 
-            $branchesQuery->where('merchant_id', $merchantId);
-
-            $employeesQuery->whereHas('branch', function ($q) use ($merchantId) {
-                $q->where('merchant_id', $merchantId);
-            });
+            $employeesQuery->whereHas(
+                'branch',
+                fn($q) =>
+                $q->where('user_id', $merchantId)
+            );
         }
 
         /*
@@ -49,55 +50,58 @@ class DashboardController extends Controller
     */
 
         $recentEmployees = Employee::with('branch')
-            ->when($user->role === 'merchant_owner', function ($q) use ($merchantId) {
-                $q->whereHas('branch', function ($b) use ($merchantId) {
-                    $b->where('merchant_id', $merchantId);
-                });
-            })
+            ->when(
+                $isMerchant,
+                fn($q) =>
+                $q->whereHas(
+                    'branch',
+                    fn($b) =>
+                    $b->where('user_id', $merchantId)
+                )
+            )
             ->latest()
-            ->take(10)
+            ->limit(10)
             ->get();
 
-        return view('pages.dashboard.home', [
+        /*
+    |--------------------------------------------------------------------------
+    | Totals
+    |--------------------------------------------------------------------------
+    */
 
-            /*
-        |--------------------------------------------------------------------------
-        | Totals
-        |--------------------------------------------------------------------------
-        */
+        $totalMerchants     = $merchantsQuery->count();
+        $totalBranches      = $branchesQuery->count();
+        $totalEmployees     = $employeesQuery->count();
 
-            'totalMerchants'     => $merchantsQuery->count(),
+        /*
+    |--------------------------------------------------------------------------
+    | This Month Statistics
+    |--------------------------------------------------------------------------
+    */
+
+        $merchantsThisMonth = (clone $merchantsQuery)
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->count();
+
+        $branchesThisMonth = (clone $branchesQuery)
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->count();
+
+        $employeesThisMonth = (clone $employeesQuery)
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->count();
+
+        return view('pages.dashboard.home', compact(
+            'totalMerchants',
+            'totalBranches',
+            'totalEmployees',
+            'merchantsThisMonth',
+            'branchesThisMonth',
+            'employeesThisMonth',
+            'recentEmployees'
+        ) + [
             'totalBusinessTypes' => BusinessType::count(),
-            'totalBranches'      => $branchesQuery->count(),
-            'totalEmployees'     => $employeesQuery->count(),
-            'totalTips'          => 0,
-
-
-            /*
-        |--------------------------------------------------------------------------
-        | This Month Statistics
-        |--------------------------------------------------------------------------
-        */
-
-            'merchantsThisMonth' => (clone $merchantsQuery)
-                ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
-                ->count(),
-
-            'branchesThisMonth' => (clone $branchesQuery)
-                ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
-                ->count(),
-
-            'employeesThisMonth' => (clone $employeesQuery)
-                ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
-                ->count(),
-
-            /*
-        |--------------------------------------------------------------------------
-        | Recent Data
-        |--------------------------------------------------------------------------
-        */
-
-            'recentEmployees' => $recentEmployees,
+            'totalTips' => 0,
         ]);
     }
 }

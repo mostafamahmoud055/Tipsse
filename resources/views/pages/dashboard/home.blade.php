@@ -40,25 +40,25 @@
     <div class="grid grid-cols-3 gap-4 pb-4">
 
         <div class="col-span-3 md:col-span-2">
-            <x-ecommerce.statistics-chart />
+            <x-tipssestate.statistics-chart />
         </div>
 
         <div class="col-span-3 md:col-span-1">
-            <x-ecommerce.recent-tips />
+            <x-tipssestate.recent-tips />
         </div>
 
     </div>
     <div class="grid grid-cols-3 gap-4 pb-4">
 
         <div class="col-span-3 md:col-span-2">
-           <x-ecommerce.recent-employees :employees="$recentEmployees" />
+           <x-tipssestate.recent-employees :employees="$recentEmployees" />
 
         </div>
         <div class="col-span-3 md:col-span-1">
             <div class="grid grid-cols-1 gap-4 pb-4">
-                <x-ecommerce.card-section title="{{ $merchantsThisMonth }} Merchants This Month" />
-                <x-ecommerce.card-section title="{{ $branchesThisMonth }} Branches This Month" />
-                <x-ecommerce.card-section title="{{ $employeesThisMonth }} Employees This Month" />
+                <x-tipssestate.card-section title="{{ $merchantsThisMonth }} Merchants This Month" />
+                <x-tipssestate.card-section title="{{ $branchesThisMonth }} Branches This Month" />
+                <x-tipssestate.card-section title="{{ $employeesThisMonth }} Employees This Month" />
 
             </div>
         </div>

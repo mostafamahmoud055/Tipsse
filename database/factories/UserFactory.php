@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Merchant;
+use App\Models\User;
 use Illuminate\Support\Str;
 use App\Models\MerchantApplication;
 use Illuminate\Support\Facades\Hash;
@@ -20,9 +20,12 @@ class UserFactory extends Factory
             'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
             'national_id' => $this->faker->numerify('##############'),
+            'remember_token' => Str::random(10),
             'role' => 'merchant_owner',
             'password' => Hash::make('password123'),
-            'remember_token' => Str::random(10),
+            'phone' => $data['phone'] ?? null,
+            'business_type' => 'service',
+            'is_active' => $data['is_active'] ?? true,
             'created_at' => now(),
             'updated_at' => now(),
         ];
@@ -40,14 +43,8 @@ class UserFactory extends Factory
     {
         return $this->afterCreating(function ($user) {
 
-            $merchant = Merchant::factory()->create([
-                'user_id' => $user->id,
-                'name' => $user->name,
-            ]);
-
             MerchantApplication::factory()->create([
                 'user_id' => $user->id,
-                'merchant_id' => $merchant->id,
             ]);
         });
     }

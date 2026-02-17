@@ -49,7 +49,8 @@
                                 <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                                     Name<span class="text-error-500">*</span>
                                 </label>
-                                <input type="text" id="name" require name="name" placeholder="Enter your name" value="{{ old('name') }}"
+                                <input type="text" id="name" require name="name" placeholder="Enter your name"
+                                    value="{{ old('name') }}"
                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" />
                             </div>
                             @error('name')
@@ -62,10 +63,35 @@
                             <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                                 Email<span class="text-error-500">*</span>
                             </label>
-                            <input type="email" id="email" require name="email" placeholder="Enter your email" value="{{ old('email') }}"
+                            <input type="email" id="email" require name="email" placeholder="Enter your email"
+                                value="{{ old('email') }}"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" />
+                            @error('email')
+                                <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <!-- national id -->
+                        <div>
+                            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                                National id<span class="text-error-500">*</span>
+                            </label>
+                            <input type="national_id" id="national_id" require name="national_id"
+                                placeholder="Enter your National ID" value="{{ old('national_id') }}"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" />
+                            @error('national_id')
+                                <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <!-- phone -->
+                        <div>
+                            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                                Phone<span class="text-error-500">*</span>
+                            </label>
+                            <input type="phone" id="phone" require name="phone" placeholder="Enter your Phone"
+                                value="{{ old('phone') }}"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" />
                         </div>
-                        @error('email')
+                        @error('phone')
                             <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                         @enderror
                         <!-- Password -->

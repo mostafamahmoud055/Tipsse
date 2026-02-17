@@ -13,6 +13,6 @@ class CardSection extends Component
 
     public function render()
     {
-        return view('components.ecommerce.card-section');
+        return view('components.tipssestate.card-section');
     }
 }

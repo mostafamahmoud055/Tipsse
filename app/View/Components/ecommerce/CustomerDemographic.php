@@ -21,6 +21,6 @@ class CustomerDemographic extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.ecommerce.customer-demographic');
+        return view('components.tipssestate.customer-demographic');
     }
 }

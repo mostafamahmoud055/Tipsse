@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class MerchantApplication extends Model
 {
 
     use HasFactory;
     protected $fillable = [
-        'merchant_id',
+        'user_id',
         'user_id',
         'application_number',
         'status',
@@ -22,8 +23,4 @@ class MerchantApplication extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function merchant()
-    {
-        return $this->belongsTo(Merchant::class);
-    }
 }

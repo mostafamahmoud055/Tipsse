@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Branch;
-use App\Models\Merchant;
-use Illuminate\Http\Request;
-use App\Services\MerchantService;
-use App\Models\MerchantApplication;
 use App\Http\Controllers\Controller;
+use App\Models\MerchantApplication;
+use App\Services\MerchantService;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class MerchantApplicationController extends Controller
@@ -52,6 +51,7 @@ class MerchantApplicationController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'phone' => 'required|regex:/^\+?\d{7,15}$/',
+            'national_id' => 'required|regex:/^\+?\d{7,15}$/',
             'password' => 'required|string|min:6',
             'business_type' => 'required|exists:business_types,name',
             'is_actve' => 'boolean'
@@ -69,70 +69,31 @@ class MerchantApplicationController extends Controller
      */
     public function show(MerchantApplication $application)
     {
-        $application->load(['user', 'merchant']);
+        $application->load([
+            'user.branches',
+            'user.employees'
+        ]);
+
         return view('pages.merchant.show-merchant', compact('application'));
     }
 
-    /**
-     * Apply for a merchant (admin creates merchant & application)
-     */
-    public function apply(Request $request)
-    {
-        $request->validate([
-            'user_id'       => ['required', 'exists:users,id'],
-            'business_name' => ['required', 'string', 'max:255'],
-            'phone'         => ['nullable', 'string', 'max:20'],
-        ]);
-
-        $user = \App\Models\User::findOrFail($request->user_id);
-
-        try {
-            $application = $this->merchantService->apply($request->only(['business_name', 'phone']), $user);
-
-            return redirect()->back()->with('success', 'Merchant application created successfully.');
-        } catch (ValidationException $e) {
-            return redirect()->back()->withErrors($e->errors());
-        }
-    }
-
-    /**
-     * Approve merchant application
-     */
-    public function approve(MerchantApplication $application)
-    {
-        $this->merchantService->approve($application);
-
-        return redirect()
-            ->back()
-            ->with('success', 'Merchant application approved successfully.');
-    }
-
-    /**
-     * Reject merchant application
-     */
-    public function reject(Request $request, MerchantApplication $application)
-    {
-        $request->validate([
-            'rejection_reason' => ['required', 'string', 'min:5'],
-        ]);
-
-        $this->merchantService->reject($application, $request->rejection_reason);
-
-        return redirect()
-            ->back()
-            ->with('success', 'Merchant application rejected.');
-    }
 
     public function edit(Request $request, MerchantApplication $application)
     {
         $request->validate([
             'name'          => 'nullable|string|max:255',
-            'email'         => 'nullable|email|unique:users,email,' . $application->user_id,
+            'email' => [
+                'nullable',
+                'email',
+                Rule::unique('employees', 'email')->ignore($application->user_id),
+            ],
             'phone'         => 'nullable|regex:/^\+?\d{7,15}$/',
             'password'      => 'nullable|string|min:6',
             'business_type' => 'required|exists:business_types,name',
             'is_active'     => 'boolean',
             'status'        => 'nullable|in:pending,approved,rejected',
+            'national_id' => 'nullable|regex:/^\+?\d{7,15}$/',
+            'is_actve' => 'boolean'
         ]);
 
         $this->merchantService->editMerchant($application, $request->all());
@@ -148,10 +109,10 @@ class MerchantApplicationController extends Controller
     public function destroy(String $id)
     {
 
-        $this->merchantService->deleteApplication($id);
+        $this->merchantService->deleteMerchant($id);
 
         return redirect()
             ->back()
-            ->with('success', 'Merchant application deleted successfully.');
+            ->with('success', 'Merchant deleted successfully.');
     }
 }

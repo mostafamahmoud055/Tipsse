@@ -8,12 +8,12 @@ class EmployeeService
 {
     public function getEmployees(array $filters = [], int $perPage = 10)
     {
-        $query = Employee::with(['merchant', 'branch']);
+        $query = Employee::with(['user', 'branch']);
 
         $user = auth()->user();
 
         if ($user->role === 'merchant_owner') {
-            $query->where('merchant_id', $user->merchant?->user_id);
+            $query->where('user_id', $user->id);
         }
 
         if (!empty($filters['search'])) {
@@ -40,7 +40,7 @@ class EmployeeService
     }
     public function findById($id)
     {
-        return Employee::with(['merchant', 'branch'])->findOrFail($id);
+        return Employee::with(['user', 'branch'])->findOrFail($id);
     }
 
     public function create(array $data)

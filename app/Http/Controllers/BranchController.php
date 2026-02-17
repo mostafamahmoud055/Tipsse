@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Http\Controllers\Controller;
 use App\Models\Branch;
-use App\Models\Merchant;
-use Illuminate\Http\Request;
+use App\Models\User;
 use App\Services\BranchService;
+use Illuminate\Http\Request;
 
 class BranchController extends Controller
 {
@@ -24,14 +24,13 @@ class BranchController extends Controller
 
     public function show(Branch $branch)
     {
-
-        $branch->load(['merchant']);
+        $branch->load(['user']);
         return view('pages.branch.show-branch', compact('branch'));
     }
     public function store(Request $request)
     {
         $request->validate([
-            'merchant_id' => 'required|exists:merchants,id',
+            'user_id' => 'required|exists:users,id',
             'name'        => 'required|string|max:255',
             'is_active'      => 'required|boolean',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
@@ -47,7 +46,7 @@ class BranchController extends Controller
 
 
         $request->validate([
-            'merchant_id' => 'sometimes|exists:merchants,id',
+            'user_id' => 'sometimes|exists:users,id',
             'name'        => 'required|string|max:255',
             'is_active'   => 'boolean',
             'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
@@ -70,16 +69,16 @@ class BranchController extends Controller
     {
         $search = $request->get('q');
 
-        $merchant = Merchant::where('name', 'like', "%{$search}%")
+        $user = User::where('name', 'like', "%{$search}%")
             ->limit(10)
             ->get(['id', 'name']);
 
-        return response()->json($merchant);
+        return response()->json($user);
     }
 
     public function branches($merchantId)
     {
-        $branches = Branch::where('merchant_id', $merchantId)->get();
+        $branches = Branch::where('user_id', $merchantId)->get();
         return response()->json($branches);
     }
 }

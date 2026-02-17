@@ -19,7 +19,7 @@ class MenuHelper
                 'icon' => 'ecommerce',
                 'name' => 'Merchant Application',
                 'path' => '/merchant-application',
-                'roles' => ['admin', 'super_admin'],
+
             ],
             [
                 'icon' => 'forms',
@@ -60,10 +60,9 @@ class MenuHelper
             [
                 'icon' => 'settings',
                 'name' => 'Settings',
-                'roles' => ['admin', 'super_admin'],
 
                 'subItems' => [
-                    ['name' => 'Merchant Contract', 'path' => '/settings', 'icon' => 'user'],
+                    ['name' => 'Merchant Contract', 'path' => '/contract', 'icon' => 'user'],
                 ],
             ],
             [

@@ -4,9 +4,10 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\User;
+use Database\Seeders\ContractSeeder;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -22,12 +23,9 @@ class DatabaseSeeder extends Seeder
             'role' => 'super_admin',
             'email_verified_at' => Carbon::now(),
         ]);
-        User::create([
-            'name' => 'merchant user',
-            'email' => 'merchant@mail.com',
-            'password' => Hash::make('123456'),
-            'role' => 'merchant_owner',
-            'email_verified_at' => Carbon::now(),
+        $this->call([
+            MerchantSeeder::class,
+            ContractSeeder::class,
         ]);
         User::factory()
             ->count(100)

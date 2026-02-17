@@ -1,12 +1,12 @@
 @props([
     'ButtonName' => '',
     'modalTitle' => '',
-    'application' => null,
+    'term' => null,
     'updateStatus' => false,
 ])
 @php
-    $isEdit = !is_null($application);
-    $modalId = $isEdit ? 'merchant-modal-' . $application->id : 'merchant-modal-create';
+    $isEdit = !is_null($term);
+    $modalId = $isEdit ? 'type-modal-' . $term->id : 'type-modal-create';
 @endphp
 
 <div class="border-t border-gray-100 dark:border-gray-800">
@@ -49,57 +49,29 @@
                     {{ $modalTitle }}
                 </h4>
                 <form method="POST"
-                    action="{{ $isEdit ? route('merchants.edit', $application->id) : route('merchants.store') }}">
+                    action="{{ $isEdit ? route('contract.edit', $term->id) : route('contract.store') }}">
 
                     @csrf
                     @if ($isEdit)
                         @method('PUT')
                     @endif
                     <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
-
-                        {{--  Drop Down  --}}
                         <div class="col-span-2">
                             <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                Contract Status<span class="text-error-500">*</span>
+                                Name<span class="text-error-500">*</span>
                             </label>
-                            <div x-data="{ isOptionSelected: false }" class="relative z-20 bg-transparent">
-                                <select required name="status"
-                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-
-                                    <option disabled {{ old('status', $application?->status) ? '' : 'selected' }}>
-                                        Select Type</option>
-
-                                    <option value="pending"
-                                        {{ old('status', $application?->status) == 'pending' ? 'selected' : '' }}>
-                                        Pending
-                                    </option>
-                                    <option value="approved"
-                                        {{ old('status', $application?->status) == 'approved' ? 'selected' : '' }}>
-                                        Approved
-                                    </option>
-                                    <option value="rejected"
-                                        {{ old('status', $application?->status) == 'rejected' ? 'selected' : '' }}>
-                                        Rejected
-                                    </option>
-                                </select>
-
-                                @error('business_type')
-                                    <p class="mt-1 text-sm text-error-500">{{ $message }}</p>
-                                @enderror
-
-
-                                <span
-                                    class="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                                    <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20"
-                                        fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke=""
-                                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-                                </span>
-                            </div>
+                            <input type="text" required name="name" placeholder="StartUp"
+                                value="{{ old('name', $term?->name) }}"
+                                class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800">
                         </div>
+                        <div class="col-span-2">
+                            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                                Condition<span class="text-error-500">*</span>
+                            </label>
+                            <textarea required name="condition" placeholder="StartUp" rows="4"
+                                class="dark:bg-dark-900 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800">{{ old('condition', $term?->condition) }}</textarea>
 
-
+                        </div>
 
                     </div>
 
@@ -110,7 +82,7 @@
                         </button>
                         <button type="submit"
                             class="menu-item-active h-fit w-full md:w-auto rounded-lg px-4 py-3 text-sm font-medium text-white">
-                            {{ $isEdit ? 'Update Merchant' : 'Create Merchant' }}
+                            {{ $isEdit ? 'Update Condition' : 'Create Condition' }}
                         </button>
                     </div>
                 </form>

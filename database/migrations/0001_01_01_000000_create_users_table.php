@@ -18,6 +18,9 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('national_id')->nullable();
             $table->enum('role', ['super_admin', 'merchant_owner']);
+            $table->string('business_type')->nullable();
+            $table->string('phone')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

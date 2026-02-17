@@ -6,19 +6,18 @@ use App\Models\Branch;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class BranchService
 {
 
     public function getBranches(array $filters = [], int $perPage = 15)
     {
-        $query = Branch::with('merchant');
+        $query = Branch::with('user');
 
         $user = auth()->user();
 
         if ($user->role === 'merchant_owner') {
-            $query->where('merchant_id', $user->merchant?->user_id);
+            $query->where('user_id', $user->id);
         }
 
         // ==== Search ====
@@ -26,7 +25,7 @@ class BranchService
             $search = $filters['search'];
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                    ->orWhereHas('merchant', function ($mq) use ($search) {
+                    ->orWhereHas('user', function ($mq) use ($search) {
                         $mq->where('name', 'like', "%{$search}%");
                     });
             });
@@ -72,7 +71,7 @@ class BranchService
             }
 
             return Branch::create([
-                'merchant_id' => $data['merchant_id'],
+                'user_id' => $data['user_id'],
                 'name'        => $data['name'],
                 'is_active'   => $data['is_active'] ?? 0,
                 'image'       => $imagePath,

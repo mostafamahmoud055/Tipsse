@@ -2,22 +2,26 @@
 
 namespace App\Models;
 
+use App\Models\Employee;
 use App\Models\User;
-use App\Models\MerchantApplication;
 use Illuminate\Database\Eloquent\Model;
 
 class Branch extends Model
 {
     protected $fillable = [
-        'merchant_id',
+        'user_id',
         'name',
         'is_active',
         'image'
     ];
 
-    public function merchant()
+    public function user()
     {
-        return $this->belongsTo(Merchant::class);
+        return $this->belongsTo(User::class);
+    }
+    public function employees()
+    {
+        return $this->hasMany(Employee::class);
     }
 
 

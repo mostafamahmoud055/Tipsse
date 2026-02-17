@@ -1,6 +1,8 @@
 <?php
 namespace App\Models;
 
+use App\Models\Branch;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,12 +11,12 @@ class Employee extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'email', 'phone', 'national_id', 'merchant_id', 'branch_id', 'is_active'
+        'name', 'email', 'phone', 'national_id', 'user_id', 'branch_id', 'is_active'
     ];
 
-    public function merchant()
+    public function user()
     {
-        return $this->belongsTo(Merchant::class);
+        return $this->belongsTo(User::class);
     }
 
     public function branch()

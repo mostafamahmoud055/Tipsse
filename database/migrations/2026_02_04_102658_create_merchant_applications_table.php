@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('merchant_applications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('merchant_id')->unique()->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->unique()->constrained()->cascadeOnDelete();
             $table->string('application_number')->unique();
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');

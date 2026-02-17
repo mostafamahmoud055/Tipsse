@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Notifications\Notifiable;
+
+use App\Models\MerchantApplication;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -22,6 +23,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'role',
+        'national_id',
+        'business_type',
+        'phone',
+        'is_active',
     ];
 
     /**
@@ -47,13 +53,31 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    public function merchant()
-    {
-        return $this->hasOne(Merchant::class);
-    }
-
     public function merchantApplication()
     {
         return $this->hasOne(MerchantApplication::class);
+    }
+
+    public function getIsActiveAttribute(): string
+    {
+        return $this->attributes['is_active'] ? 'Active' : 'Inactive';
+    }
+
+    public function Branches()
+    {
+        return $this->hasMany(Branch::class);
+    }
+    public function Employees()
+    {
+        return $this->hasMany(Employee::class);
+    }
+    public function application()
+    {
+        return $this->hasOne(MerchantApplication::class);
+    }
+
+    public function businessType()
+    {
+        return $this->belongsTo(BusinessType::class);
     }
 }

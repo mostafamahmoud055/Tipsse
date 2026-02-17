@@ -8,11 +8,9 @@ Route::name('merchants.')->middleware(['auth', 'verified','role:super_admin'])->
     Route::get('/Merchants', [MerchantApplicationController::class, 'index'])->name('index');
     Route::post('/merchants/store', [MerchantApplicationController::class, 'createNewMerchant'])->name('store');
 
-    Route::get('/merchants/{application}', [MerchantApplicationController::class, 'show'])->name('show');
+
 
     Route::post('/merchants/apply', [MerchantApplicationController::class, 'apply'])->name('apply');
-    Route::post('/merchants/{application}/approve', [MerchantApplicationController::class, 'approve'])->name('approve');
-    Route::post('/merchants/{application}/reject', [MerchantApplicationController::class, 'reject'])->name('reject');
 
     Route::delete('/merchants/{application}', [MerchantApplicationController::class, 'destroy'])->name('delete');
 
@@ -21,6 +19,6 @@ Route::name('merchants.')->middleware(['auth', 'verified','role:super_admin'])->
 
     // merchant application pages
 });
-
-Route::get('/merchant-application', [MerchantApplicationController::class, 'index'])->name('merchant-application')->middleware(['auth', 'verified','role:super_admin']);
+    Route::get('/merchants/{application}', [MerchantApplicationController::class, 'show'])->middleware(['auth', 'verified'])->name('merchants.show');
+Route::get('/merchant-application', [MerchantApplicationController::class, 'index'])->name('merchant-application')->middleware(['auth', 'verified']);
 Route::get('/contracts', [MerchantApplicationController::class, 'index'])->name('contracts')->middleware(['auth', 'verified','role:super_admin']);

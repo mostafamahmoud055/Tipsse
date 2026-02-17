@@ -42,7 +42,7 @@
                             </div>
                             <div>
                                 <p class="text-xs text-gray-500 dark:text-gray-400">Merchant :</p>
-                                <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $branch->merchant->name }}</p>
+                                <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $branch->user->name }}</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-4">
@@ -56,7 +56,7 @@
                             </div>
                             <div>
                                 <p class="text-xs text-gray-500 dark:text-gray-400">Merchant E-mail :</p>
-                                <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $branch->merchant->user->email }}</p>
+                                <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $branch->user->email }}</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-4">
@@ -70,7 +70,7 @@
                             </div>
                             <div>
                                 <p class="text-xs text-gray-500 dark:text-gray-400">Phone :</p>
-                                <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $branch->merchant->phone }}</p>
+                                <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $branch->user->phone }}</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-4">
@@ -94,51 +94,36 @@
             <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
                 <div class="mb-6 flex items-center justify-between">
                     <div class="flex items-center gap-2">
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white">All Employee</h3>
-                        <span class="text-xs font-bold text-green-600">Total 9563</span>
-                    </div>
-                    <div class="relative">
-                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <circle cx="11" cy="11" r="8" />
-                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                            </svg>
-                        </span>
-                        <input type="text" placeholder="search"
-                            class="rounded-lg border border-gray-200 bg-gray-50 py-1.5 pl-9 pr-4 text-sm focus:outline-none dark:border-gray-700 dark:bg-white/5">
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white">All Employees</h3>
                     </div>
                 </div>
 
                 <div class="space-y-4">
-                    @foreach (range(1, 4) as $index)
+                    @forelse ($branch->employees as $employee)
                         <div
                             class="flex items-center justify-between rounded-xl border border-gray-100 p-4 dark:border-gray-800">
                             <div class="flex items-center gap-4">
-                                <img src="{{ asset('images/avatar.png') }}" class="h-12 w-12 rounded-lg object-cover"
+                                <img src="images/avatar-placeholder.png" class="h-12 w-12 rounded-lg object-cover"
                                     alt="User">
                                 <div>
-                                    <h4 class="text-sm font-bold text-gray-900 dark:text-white">Noor Ali</h4>
-                                    <p class="text-xs text-gray-500">Branch name #1 <span class="mx-1">•</span>
-                                        +96658665666 <span class="mx-1">•</span> noor@gmail.com</p>
+                                    <h4 class="text-sm font-bold text-gray-900 dark:text-white">{{ $employee->name }}</h4>
+                                    <p class="text-xs text-gray-500">{{ $employee->branch->name }} #1 <span
+                                            class="mx-1">•</span>
+                                        {{ $employee->phone }} <span class="mx-1">•</span> {{ $employee->email }}</p>
                                 </div>
                             </div>
-                            <button class="text-gray-400 hover:text-gray-600">
-                                {!! menu_icon('edit-icon') !!}
-                            </button>
+                            <a href="{{ route('employees.show', ['employee' => $employee->id]) }}"
+                                class="inline-flex items-center justify-center rounded bg-blue-50 px-2.5 py-1.5 text-blue-700 hover:bg-blue-100 dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25">
+                                {!! menu_icon('view-icon') !!}
+                            </a>
                         </div>
-                    @endforeach
-                </div>
-
-                <div class="mt-6 flex items-center justify-between">
-                    <p class="text-xs text-gray-500">Showing data 1 to 8 of 256K entries</p>
-                    <div class="flex gap-1">
-                        <button class="rounded border p-1 text-xs dark:border-gray-700">‹</button>
-                        <button class="rounded bg-green-600 px-2 py-1 text-xs text-white">1</button>
-                        <button class="rounded border px-2 py-1 text-xs dark:border-gray-700">2</button>
-                        <button class="rounded border px-2 py-1 text-xs dark:border-gray-700">3</button>
-                        <button class="rounded border p-1 text-xs dark:border-gray-700">›</button>
-                    </div>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="text-center py-6 text-gray-400">
+                                No employee found
+                            </td>
+                        </tr>
+                    @endforelse
                 </div>
             </div>
         </div>

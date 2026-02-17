@@ -4,41 +4,41 @@
     <x-common.page-breadcrumb pageTitle="Merchant Applications" />
     @include('layouts.filter.filter-page')
     <div class="grid sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-10 mb-5">
-@include('layouts.statistics.card-statistics', [
-    'title' => 'All Applications',
-    'value' => $totalApplications ?? 0,
-    'icon' => 'images/icons/Vector1.png',
-    'iconBg' => 'bg-icon-purple',
-    'percentage' => null,
-    'period' => null,
-])
+        @include('layouts.statistics.card-statistics', [
+            'title' => 'All Applications',
+            'value' => $totalApplications ?? 0,
+            'icon' => 'images/icons/Vector1.png',
+            'iconBg' => 'bg-icon-purple',
+            'percentage' => null,
+            'period' => null,
+        ])
 
-@include('layouts.statistics.card-statistics', [
-    'title' => 'Approved Applications',
-    'value' => $approvedApplications ?? 0,
-    'icon' => 'images/icons/verification_4561680.png',
-    'iconBg' => 'bg-icon-green',
-    'percentage' => null,
-    'period' => null,
-])
+        @include('layouts.statistics.card-statistics', [
+            'title' => 'Approved Applications',
+            'value' => $approvedApplications ?? 0,
+            'icon' => 'images/icons/verification_4561680.png',
+            'iconBg' => 'bg-icon-green',
+            'percentage' => null,
+            'period' => null,
+        ])
 
-@include('layouts.statistics.card-statistics', [
-    'title' => 'Pending Applications',
-    'value' => $pendingApplications ?? 0,
-    'icon' => 'images/icons/quill_info.png',
-    'iconBg' => 'bg-icon-yellow',
-    'percentage' => null,
-    'period' => null,
-])
+        @include('layouts.statistics.card-statistics', [
+            'title' => 'Pending Applications',
+            'value' => $pendingApplications ?? 0,
+            'icon' => 'images/icons/quill_info.png',
+            'iconBg' => 'bg-icon-yellow',
+            'percentage' => null,
+            'period' => null,
+        ])
 
-@include('layouts.statistics.card-statistics', [
-    'title' => 'Rejected Applications',
-    'value' => $rejectedApplications ?? 0,
-    'icon' => 'images/icons/material-symbols_close-rounded.png',
-    'iconBg' => 'bg-icon-red',
-    'percentage' => null,
-    'period' => null,
-])
+        @include('layouts.statistics.card-statistics', [
+            'title' => 'Rejected Applications',
+            'value' => $rejectedApplications ?? 0,
+            'icon' => 'images/icons/material-symbols_close-rounded.png',
+            'iconBg' => 'bg-icon-red',
+            'percentage' => null,
+            'period' => null,
+        ])
 
     </div>
     @include('layouts.message')
@@ -65,19 +65,19 @@
                         @foreach ($applications as $app)
                             <tr class="hover:bg-gray-50 dark:hover:bg-white/5">
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
-                                    M - {{ $app->merchant->id }}
+                                    M - {{ $app->user->id }}
                                 </td>
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
                                     {{ $app->user->name }}
                                 </td>
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
-                                    {{ $app->merchant->business_type }}
+                                    {{ $app->user->business_type }}
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
                                     {{ $app->user->email }}
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
-                                    {{ $app->merchant->phone ?? '-' }}
+                                    {{ $app->user->phone ?? '-' }}
                                 </td>
                                 <td class="px-6 py-4 text-sm">
                                     @php
@@ -101,11 +101,18 @@
                                 <td class="px-6 py-4">
                                     <div class="flex gap-2">
                                         <div class="flex gap-2">
- 
 
-                                            {{-- Edit --}}
-                                            <x-form.modals.merchant-modal modalTitle='Edit Merchant' :application=$app updateStatus=true />
-
+                                            @can('role', 'admin')
+                                                {{-- Edit --}}
+                                                <x-form.modals.merchant-modal modalTitle='Edit Merchant Application' :application=$app
+                                                    updateStatus=true />
+                                            @else
+                                                {{-- View --}}
+                                                <a href="{{ route('merchants.show', $app->id) }}"
+                                                    class="inline-flex items-center justify-center rounded bg-blue-50 px-2.5 py-1.5 text-blue-700 hover:bg-blue-100 dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25">
+                                                    {!! menu_icon('view-icon') !!}
+                                                </a>
+                                            @endcan
                                         </div>
 
                                     </div>
@@ -115,7 +122,7 @@
                     </tbody>
                 </table>
 
-               <div class="m-4 flex justify-center">
+                <div class="m-4 flex justify-center">
                     {{ $applications->links() }}
                 </div>
             </div>

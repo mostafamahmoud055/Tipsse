@@ -57,19 +57,19 @@
                         @foreach ($applications as $app)
                             <tr class="hover:bg-gray-50 dark:hover:bg-white/5">
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
-                                    M - {{ $app->merchant->id }}
+                                    M - {{ $app->user->id }}
                                 </td>
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
                                     {{ $app->user->name }}
                                 </td>
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
-                                    {{ $app->merchant->business_type }}
+                                    {{ $app->user->business_type }}
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
                                     {{ $app->user->email }}
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
-                                    {{ $app->merchant->phone ?? '-' }}
+                                    {{ $app->user->phone ?? '-' }}
                                 </td>
                                 <td class="px-6 py-4 text-sm">
                                     @php
@@ -82,8 +82,8 @@
                                         ];
                                     @endphp
                                     <span
-                                        class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $statusClasses[$app->merchant->is_active] ?? 'bg-gray-50 text-gray-700 dark:bg-gray-500/15 dark:text-gray-500' }}">
-                                        {{ ucfirst($app->merchant->is_active) }}
+                                        class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $statusClasses[$app->user->is_active] ?? 'bg-gray-50 text-gray-700 dark:bg-gray-500/15 dark:text-gray-500' }}">
+                                        {{ ucfirst($app->user->is_active) }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
@@ -97,23 +97,15 @@
                                                 class="inline-flex items-center justify-center rounded bg-blue-50 px-2.5 py-1.5 text-blue-700 hover:bg-blue-100 dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25">
                                                 {!! menu_icon('view-icon') !!}
                                             </a>
-
                                             {{-- Edit --}}
                                             <x-form.modals.merchant-modal modalTitle='Edit Merchant' :application=$app />
-
-
                                             {{-- Delete --}}
-
-
-
-                                            <x-form.modals.confirm-delete
-                                                action="{{ route('merchants.delete', $app->id) }}" method="DELETE"
-                                                title="Delete Merchant"
-                                                message="Are you sure you want to delete the merchant '{{ $app->merchant?->name ?? 'N/A' }}'? This action cannot be undone.">
+                                            <x-form.modals.confirm-delete action="{{ route('merchants.delete', $app->id) }}"
+                                                method="DELETE" title="Delete Merchant"
+                                                message="Are you sure you want to delete the merchant '{{ $app->user?->name ?? 'N/A' }}'? This action cannot be undone.">
                                                 {!! menu_icon('delete-icon') !!}
                                             </x-form.modals.confirm-delete>
                                         </div>
-
                                     </div>
                                 </td>
                             </tr>
@@ -124,8 +116,8 @@
                 {{-- Pagination Links --}}
 
                 <div class="m-4 flex justify-center">
-    {{ $applications->onEachSide(1)->links('vendor.pagination.tailwind') }}
-</div>
+                    {{ $applications->onEachSide(1)->links('vendor.pagination.tailwind') }}
+                </div>
 
             </div>
 

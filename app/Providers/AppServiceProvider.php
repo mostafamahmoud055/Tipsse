@@ -28,5 +28,13 @@ class AppServiceProvider extends ServiceProvider
 
             return in_array($user->role, $roles);
         });
+        Gate::define('merchant-only', function ($user, ...$roles) {
+
+            if ($user->role === 'merchant_owner') {
+                return true;
+            }
+
+            return in_array($user->role, $roles);
+        });
     }
 }

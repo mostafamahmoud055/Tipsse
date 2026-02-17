@@ -45,13 +45,13 @@
 
                                 </td>
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
-                                    {{ $branch->merchant->name }}
+                                    {{ $branch?->user?->name }}
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
                                     -
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
-                                    {{ $branch->merchant->phone ?? '-' }}
+                                    {{ $branch?->user?->phone ?? '-' }}
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
                                     {{ $branch->created_at->format('Y M d') }}

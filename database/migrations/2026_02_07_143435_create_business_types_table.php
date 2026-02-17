@@ -13,14 +13,14 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        Schema::table('merchants', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->foreignId('business_type_id')->nullable()->constrained('business_types')->onDelete('set null');
         });
     }
 
     public function down(): void
     {
-        Schema::table('merchants', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->dropForeign(['business_type_id']);
             $table->dropColumn('business_type_id');
         });
