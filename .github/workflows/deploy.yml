@@ -19,5 +19,5 @@ jobs:
           script: |
             cd ~/tipsee-backend
             git pull origin main
-            composer install --no-dev --optimize-autoloader
+            composer install --optimize-autoloader
             php artisan migrate:fresh --seed
