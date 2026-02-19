@@ -14,23 +14,23 @@
 
 <body class="h-full bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800">
 
-<div class="flex justify-center items-center min-h-screen py-10 px-4">
+<div class="flex justify-center items-center min-h-screen py-6 sm:py-10 px-3 sm:px-4">
     <div class="w-full max-w-lg">
 
-        <div class="rounded-2xl border border-gray-200 bg-white p-8 shadow-lg
+        <div class="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 shadow-lg
                     dark:border-gray-800 dark:bg-white/[0.03] transition-all duration-300">
 
             {{-- Logo --}}
-            <div class="flex flex-col items-center mb-8">
-                <div class="mb-4 relative">
+            <div class="flex flex-col items-center mb-6 sm:mb-8">
+                <div class="mb-3 sm:mb-4 relative">
                     <div class="absolute inset-0 bg-gradient-to-r from-green-400 to-blue-400 rounded-full blur opacity-20"></div>
-                    <img src="{{ asset('images/logo/auth-logo.png') }}" class="relative h-16 w-16 object-contain" />
+                    <img src="{{ asset('images/logo/auth-logo.png') }}" class="relative h-12 sm:h-16 w-12 sm:w-16 object-contain" />
                 </div>
-                <h1 class="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                <h1 class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
                     TIPSSE
                 </h1>
 
-                <p class="text-sm text-gray-600 text-center dark:text-gray-400 mt-2">
+                <p class="text-xs sm:text-sm text-gray-600 text-center dark:text-gray-400 mt-2 leading-relaxed">
                     <span class="font-semibold">Branch:</span> {{ $employee->branch->name ?? 'N/A' }}
                     <br>
                     <span class="font-semibold">Merchant:</span> {{ $employee->user->name ?? 'N/A' }}
@@ -38,8 +38,8 @@
             </div>
 
             {{-- Employee --}}
-            <div class="text-center mb-8 py-4 rounded-lg bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+            <div class="text-center mb-8 py-3 sm:py-4 rounded-lg bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+                <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white px-2">
                     {{ $employee->name }}
                 </h2>
             </div>
@@ -52,15 +52,15 @@
 
                 {{-- Amount --}}
                 <div class="mb-6">
-                <p class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                <p class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 mb-4">
                     Select Amount to Tip
                 </p>
 
-                <div class="grid grid-cols-4 gap-3 mb-4">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-4 sm:mb-5">
                     @foreach([5,10,15,20] as $amount)
                         <button type="button"
                             data-amount="{{ $amount }}"
-                            class="amount-btn h-fit w-full md:w-auto rounded-lg px-4 py-3 text-sm font-semibold 
+                            class="amount-btn h-fit w-full rounded-lg px-3 sm:px-4 py-3 sm:py-3 text-xs sm:text-sm font-semibold 
                             border-2 border-gray-200 bg-white text-gray-900
                             dark:border-gray-700 dark:bg-gray-800 dark:text-white
                             hover:border-green-500 dark:hover:border-green-400 hover:shadow-md
@@ -71,9 +71,9 @@
                     @endforeach
 
                     <button type="button" id="customBtn"
-                        class="rounded-lg border-2 border-gray-300 bg-white text-gray-900 
+                        class="col-span-2 md:col-span-1 rounded-lg border-2 border-gray-300 bg-white text-gray-900 
                         dark:border-gray-600 dark:bg-gray-800 dark:text-white 
-                        py-3 px-4 font-semibold text-sm
+                        py-3 sm:py-3 px-3 sm:px-4 font-semibold text-xs sm:text-sm
                         hover:border-blue-500 dark:hover:border-blue-400 hover:shadow-md
                         transition-all duration-200 cursor-pointer
                         active:scale-95">
@@ -87,20 +87,20 @@
                     placeholder="Enter custom amount..."
                     class="hidden w-full rounded-lg border-2 border-gray-300 dark:border-gray-600
                     bg-white dark:bg-gray-800 text-gray-900 dark:text-white
-                    px-4 py-3 text-sm font-medium
+                    px-3 sm:px-4 py-3 text-xs sm:text-sm font-medium
                     focus:outline-none focus:border-green-500 dark:focus:border-green-400 focus:ring-2 focus:ring-green-100 dark:focus:ring-green-900
                     transition-all duration-200">
                 </div>
 
                 {{-- Payment --}}
-                <div class="mb-8">
-                    <label class="block text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">
+                <div class="mb-7 sm:mb-8">
+                    <label class="block text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2 sm:mb-3">
                         Payment Method
                     </label>
                     <select name="payment_method"
                         class="w-full rounded-lg border-2 border-gray-300 dark:border-gray-600
                         bg-white dark:bg-gray-800 text-gray-900 dark:text-white
-                        px-4 py-3 text-sm font-medium
+                        px-3 sm:px-4 py-3 text-xs sm:text-sm font-medium
                         focus:outline-none focus:border-green-500 dark:focus:border-green-400 focus:ring-2 focus:ring-green-100 dark:focus:ring-green-900
                         transition-all duration-200 cursor-pointer
                         appearance-none bg-no-repeat bg-right pr-10"
@@ -117,7 +117,7 @@
                 <button type="submit"
                     class="w-full rounded-lg bg-gradient-to-r from-green-600 to-green-500
                     hover:from-green-700 hover:to-green-600
-                    text-white py-3 px-4 font-bold text-base
+                    text-white py-4 sm:py-3 px-4 font-bold text-base sm:text-base
                     shadow-md hover:shadow-lg
                     transition-all duration-200 transform hover:scale-[1.02]
                     active:scale-95
