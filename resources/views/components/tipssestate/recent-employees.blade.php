@@ -62,7 +62,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4" class="text-center py-6 text-gray-400">
+                        <td colspan="4" class="text-center py-6 font-medium text-gray-600 dark:text-white/40">
                             No employees found
                         </td>
                     </tr>
