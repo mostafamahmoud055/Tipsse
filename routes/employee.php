@@ -14,4 +14,4 @@ Route::middleware(['auth', 'verified'])->prefix('employees')->name('employees.')
 
     });
     Route::get('employees/pay/{employee}', [EmployeeController::class, 'paymentPage'])
-        ->name('pay');
+        ->name('employees.pay');
