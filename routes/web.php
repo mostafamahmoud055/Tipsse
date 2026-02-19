@@ -1,9 +1,10 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Controllers\DashboardController;
 
 
 // dashboard pages
@@ -21,6 +22,8 @@ Route::get('/tips', function () {
     return view('pages.tips', ['title' => 'Tip']);
 })->name('tips');
 
+// QR Code
+Route::get('/qr/user/{id}', [UserController::class, 'generateQr']);
 
 Route::get('images/{path}', function ($path) {
 

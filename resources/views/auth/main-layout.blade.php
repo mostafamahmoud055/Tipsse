@@ -14,9 +14,9 @@
                         <a href="/" class="mb-4 block">
                             <img src={{ asset("images/logo/auth-logo.png") }} alt="Logo" />
                         </a>
-                        <h1 class="text-center text-white">
-                            Tipsse
-                        </h1>
+                <h1 class="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                    TIPSSE
+                </h1>
                     </div>
                 </div>
             </div>

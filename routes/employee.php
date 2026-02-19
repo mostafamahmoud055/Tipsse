@@ -10,4 +10,8 @@ Route::middleware(['auth', 'verified'])->prefix('employees')->name('employees.')
         ->name('show');
     Route::put('/{id}', [EmployeeController::class, 'update'])->name('update');
     Route::delete('/{id}', [EmployeeController::class, 'destroy'])->name('delete');
-});
+    Route::get('/qrcode/{id}', [EmployeeController::class, 'generateQr'])->name('qrcode');
+
+    });
+    Route::get('employees/pay/{employee}', [EmployeeController::class, 'paymentPage'])
+        ->name('pay');

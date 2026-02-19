@@ -13,7 +13,7 @@
             <img src="/images/user/default-avatar.avif" alt="User" />
         </span>
 
-        <span class="block mr-1 font-medium text-theme-sm">{{ auth()->user()->name }}</span>
+        <span class="block mr-1 font-medium text-theme-sm">{{ auth()?->user()?->name }}</span>
 
         <!-- Chevron Icon -->
         <svg class="w-5 h-5 transition-transform duration-200" :class="{ 'rotate-180': dropdownOpen }" fill="none"
@@ -32,8 +32,8 @@
         <!-- User Info -->
         <div>
             <span
-                class="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">{{ auth()->user()->name }}</span>
-            <span class="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">{{ auth()->user()->email }}</span>
+                class="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">{{ auth()?->user()?->name }}</span>
+            <span class="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">{{ auth()?->user()?->email }}</span>
         </div>
 
         <!-- Menu Items -->

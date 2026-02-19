@@ -7,6 +7,10 @@ use App\Models\Employee;
 use App\Services\EmployeeService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use BaconQrCode\Writer;
 
 class EmployeeController extends Controller
 {
@@ -27,10 +31,20 @@ class EmployeeController extends Controller
 
     public function show(Employee $employee)
     {
+        $employee->load(['user', 'branch']); // جلب بيانات الفرع أيضاً
 
-        $employee->load(['user']);
-        return view('pages.employee.show-employee', compact('employee'));
+        // رابط QR Code يشير لصفحة الدفع
+        $renderer = new ImageRenderer(
+            new RendererStyle(200), // حجم صغير للعرض
+            new SvgImageBackEnd()   // صيغة SVG
+        );
+        $writer = new Writer($renderer);
+
+        $qrCodeSvg = $writer->writeString(route('employees.pay', $employee->id));
+
+        return view('pages.employee.show-employee', compact('employee', 'qrCodeSvg'));
     }
+
 
     public function store(Request $request)
     {
@@ -89,5 +103,29 @@ class EmployeeController extends Controller
         $this->service->delete($id);
 
         return redirect()->route('employees.index')->with('success', 'Employee deleted successfully');
+    }
+    public function generateQr($id)
+    {
+        $employee = $this->service->findById($id);
+
+        // رابط QR Code يشير لصفحة الدفع
+        $renderer = new ImageRenderer(
+            new RendererStyle(300), // حجم أكبر للتحميل
+            new SvgImageBackEnd()
+        );
+        $writer = new Writer($renderer);
+
+        $qrCodeSvg = $writer->writeString(route('employees.pay', $employee->id));
+
+        return response($qrCodeSvg, 200)
+            ->header('Content-Type', 'image/svg+xml')
+            ->header('Content-Disposition', 'inline; filename="employee-' . $employee->id . '-qrcode.svg"');
+    }
+
+
+    public function paymentPage(Employee $employee)
+    {
+        $employee->load(['user', 'branch']);
+        return view('pages.employee.payment', compact('employee'));
     }
 }

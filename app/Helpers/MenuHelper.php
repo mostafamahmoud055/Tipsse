@@ -7,7 +7,7 @@ class MenuHelper
     public static function getMainNavItems()
     {
 
-        $user = auth()->user();
+        $user = auth()?->user();
 
         return collect([
             [
@@ -75,7 +75,7 @@ class MenuHelper
 
             if (!isset($item['roles'])) return true;
 
-            return in_array($user->role, $item['roles']);
+            return in_array($user?->role, $item['roles']);
         })
             ->values()
             ->toArray();

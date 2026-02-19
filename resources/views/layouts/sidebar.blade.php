@@ -72,11 +72,9 @@
             <img x-show="!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen"
                 src="/images/logo/auth-logo.png" alt="Logo" width="50" height="50" class="pt-5" />
             <h3 x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen"
-                class="text-lg font-semibold text-gray-800 dark:text-white/90">
+                class="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
                 {{ config('app.name') }}
             </h3>
-
-
         </a>
     </div>
 
