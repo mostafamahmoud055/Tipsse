@@ -20,4 +20,6 @@ jobs:
             cd ~/tipsee-backend
             git pull origin main
             composer install --optimize-autoloader
+            npm install
+            npm run build
             php artisan migrate:fresh --seed
