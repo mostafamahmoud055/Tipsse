@@ -117,7 +117,10 @@
                                 px-3 sm:px-4 py-3 text-xs sm:text-sm font-medium text-left
                                 focus:outline-none focus:border-green-500 dark:focus:border-green-400 focus:ring-2 focus:ring-green-100 dark:focus:ring-green-900
                                 transition-all duration-200 cursor-pointer flex items-center justify-between">
-                                <span id="selectedPayment">Select Payment Method</span>
+                                <div class="flex items-center gap-2">
+                                    <img id="selectedImage" src="" alt="Payment" class="w-8 h-5 hidden">
+                                    <span id="selectedPayment">Select Payment Method</span>
+                                </div>
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <polyline points="6 9 12 15 18 9"></polyline>
                                 </svg>
@@ -127,19 +130,18 @@
                                 class="hidden absolute top-full left-0 right-0 mt-1 rounded-lg border-2 border-gray-300 dark:border-gray-600
                                 bg-white dark:bg-gray-800 shadow-lg z-10">
                                 
-                                <button type="button" class="payment-option w-full px-3 sm:px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 border-b border-gray-200 dark:border-gray-700" data-value="card" data-label="Visa / Master Card">
-                                    <img src="{{ asset('images/icons/cc.jpeg') }}" alt="Apple Pay" class="w-9 h-5">
-
+                                <button type="button" class="payment-option w-full px-3 sm:px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 border-b border-gray-200 dark:border-gray-700" data-value="card" data-label="Visa / Master Card" data-image="{{ asset('images/icons/cc.jpeg') }}">
+                                    <img src="{{ asset('images/icons/cc.jpeg') }}" alt="Visa / Master Card" class="w-9 h-5">
                                     <span class="text-xs sm:text-sm">Visa / Master Card</span>
                                 </button>
-                                <button type="button" class="payment-option w-full px-3 sm:px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 border-b border-gray-200 dark:border-gray-700" data-value="applepay" data-label="Apple Pay">
+                                <button type="button" class="payment-option w-full px-3 sm:px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 border-b border-gray-200 dark:border-gray-700" data-value="applepay" data-label="Apple Pay" data-image="{{ asset('images/icons/apay.png') }}">
                                     <img src="{{ asset('images/icons/apay.png') }}" alt="Apple Pay" class="w-9 h-5">
                                     <span class="text-xs sm:text-sm">Apple Pay</span>
                                 </button>
                                 
                                 
-                                <button type="button" class="payment-option w-full px-3 sm:px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2" data-value="samsung" data-label="Samsung Wallet">
-                                    <img src="{{ asset('images/icons/sp.jpg') }}" alt="Samsung Wallet" class="w-9 h-5">
+                                <button type="button" class="payment-option w-full px-3 sm:px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2" data-value="samsung" data-label="Samsung Pay" data-image="{{ asset('images/icons/sp.jpg') }}">
+                                    <img src="{{ asset('images/icons/sp.jpg') }}" alt="Samsung Pay" class="w-9 h-5">
                                     <span class="text-xs sm:text-sm">Samsung Pay</span>
                                 </button>
                             </div>
@@ -213,6 +215,7 @@
         const paymentOptions = document.querySelectorAll('.payment-option');
         const paymentMethodInput = document.getElementById('paymentMethod');
         const selectedPaymentSpan = document.getElementById('selectedPayment');
+        const selectedImage = document.getElementById('selectedImage');
 
         paymentToggle.addEventListener('click', (e) => {
             e.preventDefault();
@@ -224,9 +227,12 @@
                 e.preventDefault();
                 const value = option.dataset.value;
                 const label = option.dataset.label;
+                const image = option.dataset.image;
                 
                 paymentMethodInput.value = value;
                 selectedPaymentSpan.textContent = label;
+                selectedImage.src = image;
+                selectedImage.classList.remove('hidden');
                 paymentDropdown.classList.add('hidden');
             });
         });
