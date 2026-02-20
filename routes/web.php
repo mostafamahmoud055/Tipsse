@@ -1,29 +1,26 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
-
 // dashboard pages
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard')->middleware(['auth', 'verified']);
-
 
 // profile pages
 Route::get('/profile', function () {
     return view('pages.profile', ['title' => 'Profile']);
 })->name('profile');
 
-
 // tips pages
 Route::get('/tips', function () {
     return view('pages.tips', ['title' => 'Tip']);
 })->name('tips');
 
-// QR Code
-Route::get('/qr/user/{id}', [UserController::class, 'generateQr']);
+Route::post('payments/process', [PaymentController::class, 'processPayment'])->name('payments.process');
+
 
 Route::get('images/{path}', function ($path) {
 
