@@ -88,7 +88,7 @@
                                 class="col-span-2 md:col-span-1 rounded-lg border-2 border-gray-300 bg-white text-gray-900 
                         dark:border-gray-600 dark:bg-gray-800 dark:text-white 
                         py-3 sm:py-3 px-3 sm:px-4 font-semibold text-xs sm:text-sm
-                        hover:border-blue-500 dark:hover:border-blue-400 hover:shadow-md
+                        hover:border-green-500 dark:hover:border-green-400 hover:shadow-md
                         transition-all duration-200 cursor-pointer
                         active:scale-95">
                                 Custom
@@ -109,21 +109,43 @@
                             class="block text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2 sm:mb-3">
                             Payment Method
                         </label>
-                        <select name="payment_method"
-                            class="w-full rounded-lg border-2 border-gray-300 dark:border-gray-600
-                        bg-white dark:bg-gray-800 text-gray-900 dark:text-white
-                        px-3 sm:px-4 py-3 text-xs sm:text-sm font-medium
-                        focus:outline-none focus:border-green-500 dark:focus:border-green-400 focus:ring-2 focus:ring-green-100 dark:focus:ring-green-900
-                        transition-all duration-200 cursor-pointer
-                        appearance-none bg-no-repeat bg-right pr-10"
-                            style="background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg>');
-                        background-position: right 10px center;
-                        background-size: 20px;
-                        padding-right: 40px;">
-                            <option value="paypal">PayPal</option>
-                            <option value="stripe">Stripe</option>
-                            <option value="card">Credit Card</option>
-                        </select>
+                        
+                        <div class="relative">
+                            <button type="button" id="paymentToggle"
+                                class="w-full rounded-lg border-2 border-gray-300 dark:border-gray-600
+                                bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+                                px-3 sm:px-4 py-3 text-xs sm:text-sm font-medium text-left
+                                focus:outline-none focus:border-green-500 dark:focus:border-green-400 focus:ring-2 focus:ring-green-100 dark:focus:ring-green-900
+                                transition-all duration-200 cursor-pointer flex items-center justify-between">
+                                <span id="selectedPayment">Select Payment Method</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+
+                            <div id="paymentDropdown"
+                                class="hidden absolute top-full left-0 right-0 mt-1 rounded-lg border-2 border-gray-300 dark:border-gray-600
+                                bg-white dark:bg-gray-800 shadow-lg z-10">
+                                
+                                <button type="button" class="payment-option w-full px-3 sm:px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 border-b border-gray-200 dark:border-gray-700" data-value="card" data-label="Visa / Master Card">
+                                    <img src="{{ asset('images/icons/cc.jpeg') }}" alt="Apple Pay" class="w-9 h-5">
+
+                                    <span class="text-xs sm:text-sm">Visa / Master Card</span>
+                                </button>
+                                <button type="button" class="payment-option w-full px-3 sm:px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 border-b border-gray-200 dark:border-gray-700" data-value="applepay" data-label="Apple Pay">
+                                    <img src="{{ asset('images/icons/apay.png') }}" alt="Apple Pay" class="w-9 h-5">
+                                    <span class="text-xs sm:text-sm">Apple Pay</span>
+                                </button>
+                                
+                                
+                                <button type="button" class="payment-option w-full px-3 sm:px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2" data-value="samsung" data-label="Samsung Wallet">
+                                    <img src="{{ asset('images/icons/sp.jpg') }}" alt="Samsung Wallet" class="w-9 h-5">
+                                    <span class="text-xs sm:text-sm">Samsung Pay</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="payment_method" id="paymentMethod" value="">
                     </div>
 
                     <button type="submit"
@@ -185,10 +207,45 @@
             finalAmount.value = customInput.value;
         });
 
+        // Payment method dropdown
+        const paymentToggle = document.getElementById('paymentToggle');
+        const paymentDropdown = document.getElementById('paymentDropdown');
+        const paymentOptions = document.querySelectorAll('.payment-option');
+        const paymentMethodInput = document.getElementById('paymentMethod');
+        const selectedPaymentSpan = document.getElementById('selectedPayment');
+
+        paymentToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            paymentDropdown.classList.toggle('hidden');
+        });
+
+        paymentOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.preventDefault();
+                const value = option.dataset.value;
+                const label = option.dataset.label;
+                
+                paymentMethodInput.value = value;
+                selectedPaymentSpan.textContent = label;
+                paymentDropdown.classList.add('hidden');
+            });
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.relative')) {
+                paymentDropdown.classList.add('hidden');
+            }
+        });
+
         form.addEventListener('submit', (e) => {
             if (!finalAmount.value || finalAmount.value <= 0) {
                 e.preventDefault();
                 alert('Please select or enter a valid amount');
+            }
+            if (!paymentMethodInput.value) {
+                e.preventDefault();
+                alert('Please select a payment method');
             }
         });
     </script>
