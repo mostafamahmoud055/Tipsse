@@ -8,7 +8,7 @@ Route::middleware(['auth', 'verified'])->prefix('employees')->name('employees.')
     Route::post('/', [EmployeeController::class, 'store'])->name('store');
     Route::get('/{employee}', [EmployeeController::class, 'show'])
         ->name('show');
-    Route::put('/{id}', [EmployeeController::class, 'update'])->name('update');
+    Route::put('/{employee}', [EmployeeController::class, 'update'])->name('update');
     Route::delete('/{id}', [EmployeeController::class, 'destroy'])->name('delete');
     Route::get('/qrcode/{id}', [EmployeeController::class, 'generateQr'])->name('qrcode');
 

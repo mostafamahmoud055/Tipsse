@@ -85,7 +85,7 @@ class MerchantApplicationController extends Controller
             'email' => [
                 'nullable',
                 'email',
-                Rule::unique('employees', 'email')->ignore($application->user_id),
+                Rule::unique('users', 'email')->ignore($application->user_id),
             ],
             'phone'         => 'nullable|regex:/^\+?\d{7,15}$/',
             'password'      => 'nullable|string|min:6',

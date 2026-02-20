@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('phone');
             $table->string('national_id');
+            $table->string('image')->nullable();
 
             // Relational fields
             $table->foreignId('user_id')

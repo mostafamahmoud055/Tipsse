@@ -15,6 +15,7 @@
                     <thead class="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-white/5">
                         <tr>
                             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">ID</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white"></th>
                             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Name</th>
                             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Email</th>
                             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Mobile</th>
@@ -33,6 +34,12 @@
                             <tr class="hover:bg-gray-50 dark:hover:bg-white/5">
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">E -
                                     {{ $employee->id }}</td>
+                                <td class="px-0 py-0 text-sm font-medium text-gray-900 dark:text-white">
+                                    @if ($employee->image)
+                                        <img src="{{ route('image.show', ['path' => $employee->image]) }}"
+                                            class="h-12 w-12 rounded-full object-cover" alt="Employee Image">
+                                    @endif
+                                </td>
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
                                     {{ $employee->name }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{{ $employee->email }}</td>

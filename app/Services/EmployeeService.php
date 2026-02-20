@@ -3,6 +3,9 @@
 namespace App\Services;
 
 use App\Models\Employee;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class EmployeeService
 {
@@ -45,19 +48,63 @@ class EmployeeService
 
     public function create(array $data)
     {
-        return Employee::create($data);
+        return DB::transaction(function () use ($data) {
+            $imagePath = null;
+
+            if (!empty($data['image'])) {
+                $filename = Str::uuid() . '.' . $data['image']->getClientOriginalExtension();
+
+                $imagePath = $data['image']->storeAs(
+                    'employees',
+                    $filename,
+                    'local'
+                );
+            }
+            $data['image'] = $imagePath;
+            return Employee::create($data);
+        });
     }
 
-    public function update($id, array $data)
+    public function update(Employee $employee, array $data)
     {
-        $employee = $this->findById($id);
-        $employee->update($data);
-        return $employee;
+        return DB::transaction(function () use ($employee, $data) {
+
+            if (!empty($data['image'])) {
+                if ($employee->image && Storage::disk('local')->exists($employee->image)) {
+                    Storage::disk('local')->delete($employee->image);
+                }
+
+                $filename = Str::uuid() . '.' . $data['image']->getClientOriginalExtension();
+                $imagePath = $data['image']->storeAs('employees', $filename, 'local');
+
+                $employee->image = $imagePath;
+            }
+
+            if (!empty($data['remove_image']) && $data['remove_image']) {
+                if ($employee->image && Storage::disk('local')->exists($employee->image)) {
+                    Storage::disk('local')->delete($employee->image);
+                }
+                $employee->image = null;
+            }
+
+            $employee->name = $data['name'];
+            $employee->email = $data['email'];
+            $employee->phone = $data['phone'] ?? $employee->phone;
+            $employee->national_id = $data['national_id'] ?? $employee->national_id;
+            $employee->branch_id = $data['branch_id'];
+            $employee->is_active = $data['is_active'] ?? $employee->is_active;
+
+            $employee->save();
+            $employee->refresh(); // Refresh the employee model to get updated values
+
+            return $employee;
+        });
     }
 
-    public function delete($id)
+    public function delete(Employee $employee)
     {
-        $employee = $this->findById($id);
-        return $employee->delete();
+        DB::transaction(function () use ($employee) {
+            $employee->delete();
+        });
     }
 }

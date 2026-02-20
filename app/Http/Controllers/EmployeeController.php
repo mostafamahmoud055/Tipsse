@@ -56,6 +56,8 @@ class EmployeeController extends Controller
             'user_id' => 'required|exists:users,id',
             'branch_id' => 'required|exists:branches,id',
             'is_active' => 'nullable|boolean',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+
         ]);
 
         $data['is_active'] = $data['is_active'] ?? false;
@@ -66,17 +68,14 @@ class EmployeeController extends Controller
     }
 
     // صفحة تعديل موظف
-    public function edit($id)
+    public function edit(Employee $employee)
     {
-        $employee = $this->service->findById($id);
         return view('employees.edit', compact('employee'));
     }
 
     // تحديث بيانات الموظف
-    public function update(Request $request, $id)
+    public function update(Request $request, Employee $employee)
     {
-        $employee = $this->service->findById($id);
-
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => [
@@ -89,25 +88,25 @@ class EmployeeController extends Controller
             'user_id' => 'required|exists:users,id',
             'branch_id' => 'required|exists:branches,id',
             'is_active' => 'nullable|boolean',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'remove_image' => 'nullable|boolean'
         ]);
 
         $data['is_active'] = $data['is_active'] ?? false;
 
-        $this->service->update($id, $data);
+        $this->service->update($employee, $data);
 
         return redirect()->route('employees.index')->with('success', 'Employee updated successfully');
     }
 
-    public function destroy($id)
+    public function destroy(Employee $employee)
     {
-        $this->service->delete($id);
+        $this->service->delete($employee);
 
         return redirect()->route('employees.index')->with('success', 'Employee deleted successfully');
     }
-    public function generateQr($id)
+    public function generateQr(Employee $employee)
     {
-        $employee = $this->service->findById($id);
-
         // رابط QR Code يشير لصفحة الدفع
         $renderer = new ImageRenderer(
             new RendererStyle(300), // حجم أكبر للتحميل
