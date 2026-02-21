@@ -17,7 +17,7 @@
 
     <div class="flex justify-center items-center min-h-screen py-6 sm:py-10 px-3 sm:px-4">
         <div class="w-full max-w-lg">
-    @include('layouts.message')
+            @include('layouts.message')
 
             <div
                 class="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 shadow-lg
@@ -45,11 +45,12 @@
                 </div>
 
                 @if ($employee->image)
-                <div class="flex justify-center my-5 h-40 w-full ">
+                    <div class="flex justify-center my-5 h-40 w-full ">
                         <img src="{{ route('image.show', ['path' => $employee->image]) }}"
-                            class="mb-4 overflow-hidden rounded-full ring-4 ring-gray-50 dark:ring-gray-800object-cover" alt="Employee Image">
-                        </div>
-                        @endif
+                            class="mb-4 overflow-hidden rounded-full ring-4 ring-gray-50 dark:ring-gray-800object-cover"
+                            alt="Employee Image">
+                    </div>
+                @endif
 
                 {{-- Employee --}}
                 <div
@@ -59,8 +60,7 @@
                     </h2>
                 </div>
 
-                                    <form method="POST"
-                        action="{{route('payments.process') }}" id="paymentForm">
+                <form method="POST" action="{{ route('payments.process') }}" id="paymentForm">
                     @csrf
 
                     <input type="hidden" name="employee_id" value="{{ $employee->id }}">
@@ -110,7 +110,7 @@
                             class="block text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2 sm:mb-3">
                             Payment Method
                         </label>
-                        
+
                         <div class="relative">
                             <button type="button" id="paymentToggle"
                                 class="w-full rounded-lg border-2 border-gray-300 dark:border-gray-600
@@ -130,18 +130,28 @@
                             <div id="paymentDropdown"
                                 class="hidden absolute top-full left-0 right-0 mt-1 rounded-lg border-2 border-gray-300 dark:border-gray-600
                                 bg-white dark:bg-gray-800 shadow-lg z-10">
-                                
-                                <button type="button" class="payment-option w-full px-3 sm:px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 border-b border-gray-200 dark:border-gray-700" data-value="credit_card" data-label="Visa / Master Card" data-image="{{ asset('images/icons/cc.jpeg') }}">
-                                    <img src="{{ asset('images/icons/cc.jpeg') }}" alt="Visa / Master Card" class="w-9 h-5">
+
+                                <button type="button"
+                                    class="payment-option w-full px-3 sm:px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 border-b border-gray-200 dark:border-gray-700"
+                                    data-value="stripe" data-label="Visa / Master Card"
+                                    data-image="{{ asset('images/icons/cc.jpeg') }}">
+                                    <img src="{{ asset('images/icons/cc.jpeg') }}" alt="Visa / Master Card"
+                                        class="w-9 h-5">
                                     <span class="text-xs sm:text-sm">Visa / Master Card</span>
                                 </button>
-                                <button type="button" class="payment-option w-full px-3 sm:px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 border-b border-gray-200 dark:border-gray-700" data-value="paypal" data-label="Apple Pay" data-image="{{ asset('images/icons/apay.png') }}">
+                                <button type="button"
+                                    class="payment-option w-full px-3 sm:px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 border-b border-gray-200 dark:border-gray-700"
+                                    data-value="paypal" data-label="Apple Pay"
+                                    data-image="{{ asset('images/icons/apay.png') }}">
                                     <img src="{{ asset('images/icons/apay.png') }}" alt="Apple Pay" class="w-9 h-5">
                                     <span class="text-xs sm:text-sm">Apple Pay</span>
                                 </button>
-                                
-                                
-                                <button type="button" class="payment-option w-full px-3 sm:px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2" data-value="stripe" data-label="Samsung Pay" data-image="{{ asset('images/icons/sp.jpg') }}">
+
+
+                                <button type="button"
+                                    class="payment-option w-full px-3 sm:px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2"
+                                    data-value="samsung" data-label="Samsung Pay"
+                                    data-image="{{ asset('images/icons/sp.jpg') }}">
                                     <img src="{{ asset('images/icons/sp.jpg') }}" alt="Samsung Pay" class="w-9 h-5">
                                     <span class="text-xs sm:text-sm">Samsung Pay</span>
                                 </button>
@@ -229,7 +239,7 @@
                 const value = option.dataset.value;
                 const label = option.dataset.label;
                 const image = option.dataset.image;
-                
+
                 paymentMethodInput.value = value;
                 selectedPaymentSpan.textContent = label;
                 selectedImage.src = image;

@@ -19,7 +19,14 @@ Route::get('/tips', function () {
     return view('pages.tips', ['title' => 'Tip']);
 })->name('tips');
 
-Route::post('payments/process', [PaymentController::class, 'processPayment'])->name('payments.process');
+Route::post('payments/process', [PaymentController::class, 'processPayment'])
+    ->name('payments.process');
+
+Route::get('/payments/success', [PaymentController::class, 'success'])
+    ->name('payments.success');
+
+Route::get('/payments/cancel', [PaymentController::class, 'cancel'])
+    ->name('payments.cancel');
 
 
 Route::get('images/{path}', function ($path) {

@@ -11,7 +11,7 @@ class PaymentService
 {
     public function __construct(protected PaymentGatewayService $gatewayService) {}
 
-    public function processPayment(int $id, string $method, string $amount)
+    public function processPayment(int $id, string $method, float $amount)
     {
         $employee = Employee::findOrFail($id);
 
@@ -21,27 +21,40 @@ class PaymentService
             return $gateway;
         }
 
-        $result = $gateway->pay(['amount' => $amount, 'employee_id' => $employee->id]);
+        $result = $gateway->pay($amount, $employee);
+        // Determine status: success, failed, or pending
 
         $paymentStatus = $this->determinePaymentStatus($result['status']);
 
-        $payment = $this->createPaymentRecord($employee, $method, $paymentStatus, $result ,$amount);
-
-        if ($paymentStatus === PaymentStatusEnum::SUCCESSFUL) {
+        // إذا فيه checkout_url، رجعه للمستخدم
+        if (isset($result['checkout_url'])) {
             return [
-                'status' => $payment,
+                'status' => $paymentStatus->value,
+                'checkout_url' => $result['checkout_url'],
+                'transaction_id' => $result['transaction_id'] ?? null,
             ];
         }
-
-        return ["error" => "Payment cannot be processed for employee ID: {$employee->id}", "status" => 400];
+        // لو الدفع ناجح
+        if ($paymentStatus === PaymentStatusEnum::SUCCESSFUL) {
+            return [
+                'status' => $paymentStatus->value,
+                'transaction_id' => $result['transaction_id'] ?? null,
+            ];
+        }
+        // لو الدفع فشل
+        return [
+            'error' => "Payment cannot be processed for employee: {$employee->name}",
+            'status' => 400,
+        ];
     }
-
 
     protected function determinePaymentStatus(string $status): PaymentStatusEnum
     {
-        return strtolower($status) === 'success'
-            ? PaymentStatusEnum::SUCCESSFUL
-            : PaymentStatusEnum::FAILED;
+        return match (strtolower($status)) {
+            'success' => PaymentStatusEnum::SUCCESSFUL,
+            'pending' => PaymentStatusEnum::PENDING,
+            default   => PaymentStatusEnum::FAILED,
+        };
     }
 
     protected function resolveGateway(string $method): mixed
@@ -57,15 +70,19 @@ class PaymentService
         return $gateway;
     }
 
-    protected function createPaymentRecord(Employee $employee, string $gateway, PaymentStatusEnum $status, array $gatewayResult, $amount): Payment
-    {
+    protected function createPaymentRecord(
+        Employee $employee,
+        string $gateway,
+        PaymentStatusEnum $status,
+        array $gatewayResult,
+        float $amount
+    ): Payment {
         return Payment::create([
-            'employee_id' => $employee->id,
+            'employee_id'    => $employee->id,
             'payment_method' => $gateway,
-            'status' => $status->value,
-            'amount' => $amount,
-            'reference_id' => $gatewayResult['transaction_id'],
+            'status'         => $status->value,
+            'amount'         => $amount,
+            'reference_id'   => $gatewayResult['transaction_id'] ?? null,
         ]);
     }
 }
-    

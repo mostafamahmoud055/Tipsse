@@ -6,7 +6,6 @@ use App\Enums\PaymentGatewayEnum;
 use Illuminate\Support\Facades\Cache;
 use App\Services\Payments\PayPalGateway;
 use App\Services\Payments\StripeGateway;
-use App\Services\Payments\CreditCardGateway;
 
 class PaymentGatewayService
 {
@@ -28,7 +27,6 @@ class PaymentGatewayService
 
         return match ($gatewayEnum) {
             PaymentGatewayEnum::PAYPAL => new PayPalGateway(),
-            PaymentGatewayEnum::CREDIT_CARD => new CreditCardGateway(),
             PaymentGatewayEnum::STRIPE => new StripeGateway(),
         };
     }

@@ -2,25 +2,49 @@
 
 namespace App\Services\Payments;
 
+use Stripe\Stripe;
+use Stripe\Checkout\Session;
+use App\Models\Employee;
+
 class StripeGateway
 {
-    protected string $clientId;
-    protected string $secret;
-    public function __construct(protected array $config = [])
+    public function __construct()
     {
-        $this->clientId = config('services.stripe.client_id');
-
-        $this->secret = config('services.stripe.client_secret');
+        // ضع الـ API Key بتاعك هنا أو في .env
+        Stripe::setApiKey(config('services.stripe.secret_key'));
     }
 
-    public function pay(array $data): array
+    public function pay(string $amount, Employee $employee): array
     {
-        return [
-            'status' => 'success',
-            'amount' => $data['amount'],
-            'employee_id' => $data['employee_id'],
-            'payment_method' => 'stripe',
-            'transaction_id' => uniqid('stripe_'),
-        ];
+        try {
+            $session = Session::create([
+                'payment_method_types' => ['card'],
+                'mode' => 'payment',
+                'line_items' => [[
+                    'price_data' => [
+                        'currency' => 'usd',
+                        'product_data' => [
+                            'name' => "Payment for {$employee->name}",
+                        ],
+                        'unit_amount' => intval($amount * 100), // Stripe بيحسب بالمليم
+                    ],
+                    'quantity' => 1,
+                ]],
+                'success_url' => route('payments.success') . '?session_id={CHECKOUT_SESSION_ID}',
+                'cancel_url'  => route('payments.cancel'),
+            ]);
+
+            // رجع الـ URL عشان تعمل redirect
+            return [
+                'status' => 'pending',
+                'transaction_id' => $session->id,
+                'checkout_url' => $session->url,
+            ];
+        } catch (\Exception $e) {
+            return [
+                'status' => 'failed',
+                'error' => $e->getMessage(),
+            ];
+        }
     }
 }
