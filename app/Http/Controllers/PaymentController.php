@@ -34,9 +34,9 @@ class PaymentController extends Controller
 
         $gateway = $request->input('payment_method') ?? 'stripe';
         $amount = $request->input('amount');
-        $rating = $request->input('rating', 0);
+        $rating = $request->rating ?? 0;
 
-        $paymentResult = $this->paymentService->processPayment($request->employee_id,$request->rating, $gateway, $amount);
+        $paymentResult = $this->paymentService->processPayment($request->employee_id, $rating, $gateway, $amount);
 
         // لو فيه خطأ
         if (isset($paymentResult['error'])) {
