@@ -30,7 +30,7 @@
 
         @include('layouts.statistics.card-statistics', [
             'title' => 'Tips',
-            'value' => 'SAR ' . number_format($totalTips, 2),
+            'value' => '$ ' . number_format($totalTips, 2),
             'icon' => 'images/icons/Clip path group.png',
             'iconBg' => 'bg-icon-red',
         ])

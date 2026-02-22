@@ -166,7 +166,7 @@
                                     @elseif($payment->status === 'pending') text-yellow-600
                                     @else text-red-600 @endif
                                     ">
-                                    @if($payment->status === 'successful')+ @elseif($payment->status !== 'pending')- @endif SAR {{ number_format($payment->amount, 2) }}
+                                    @if($payment->status === 'successful')+ @elseif($payment->status !== 'pending')- @endif $ {{ number_format($payment->amount, 2) }}
                                 </p>
                                 <span class="text-[10px] font-bold uppercase 
                                     @if($payment->status === 'successful') text-green-600
