@@ -118,11 +118,11 @@
                             </a>
                         </div>
                     @empty
-                        <tr>
-                            <td colspan="4" class="text-center py-6 font-medium text-gray-600 dark:text-white/40">
+                    
+                            <div class="text-center py-6 font-medium text-gray-600 dark:text-white/40">
                                 No employee found
-                            </td>
-                        </tr>
+                            </div>
+                 
                     @endforelse
                 </div>
             </div>
