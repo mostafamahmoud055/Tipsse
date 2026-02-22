@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Branch;
 use App\Models\BusinessType;
 use App\Models\Employee;
+use App\Models\Payment;
 use App\Models\User;
 
 class DashboardController extends Controller
@@ -78,7 +79,9 @@ class DashboardController extends Controller
     | This Month Statistics
     |--------------------------------------------------------------------------
     */
-
+        $employeesThisMonth = (clone $employeesQuery)
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->count();
         $merchantsThisMonth = (clone $merchantsQuery)
             ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
             ->count();
@@ -87,9 +90,32 @@ class DashboardController extends Controller
             ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
             ->count();
 
-        $employeesThisMonth = (clone $employeesQuery)
+        /*
+    |--------------------------------------------------------------------------
+    | Recently Received Tips
+    |--------------------------------------------------------------------------
+    */
+
+        $paymentsQuery = Payment::query();
+
+        if ($isMerchant) {
+            $paymentsQuery->where('user_id', $merchantId);
+        }
+
+        $recentTips = (clone $paymentsQuery)
+            ->with(['employee.branch'])
+            ->orderByDesc('created_at')
+            ->limit(5)
+            ->get();
+
+        $totalTips = (clone $paymentsQuery)
+            ->where('status', 'successful')
+            ->sum('amount');
+
+        $tipsThisMonth = (clone $paymentsQuery)
+            ->where('status', 'successful')
             ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
-            ->count();
+            ->sum('amount');
 
         return view('pages.dashboard.home', compact(
             'totalMerchants',
@@ -98,10 +124,12 @@ class DashboardController extends Controller
             'merchantsThisMonth',
             'branchesThisMonth',
             'employeesThisMonth',
-            'recentEmployees'
+            'recentEmployees',
+            'recentTips'
         ) + [
             'totalBusinessTypes' => BusinessType::count(),
-            'totalTips' => 0,
+            'totalTips' => $totalTips,
+            'tipsThisMonth' => $tipsThisMonth,
         ]);
     }
 }

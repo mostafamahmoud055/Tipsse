@@ -15,9 +15,7 @@ Route::get('/profile', function () {
 })->name('profile');
 
 // tips pages
-Route::get('/tips', function () {
-    return view('pages.tips', ['title' => 'Tip']);
-})->name('tips');
+Route::get('/tips', [PaymentController::class, 'index'])->name('tips');
 
 Route::post('payments/process', [PaymentController::class, 'processPayment'])
     ->name('payments.process');

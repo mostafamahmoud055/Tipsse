@@ -62,7 +62,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                        @foreach ($applications as $app)
+                        @forelse ($applications as $app)
                             <tr class="hover:bg-gray-50 dark:hover:bg-white/5">
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
                                     M - {{ $app->user->id }}
@@ -104,8 +104,8 @@
 
                                             @can('role', 'admin')
                                                 {{-- Edit --}}
-                                                <x-form.modals.merchant-modal modalTitle='Edit Merchant Application' :application=$app
-                                                    updateStatus=true />
+                                                <x-form.modals.merchant-modal modalTitle='Edit Merchant Application'
+                                                    :application=$app updateStatus=true />
                                             @else
                                                 {{-- View --}}
                                                 <a href="{{ route('merchants.show', $app->id) }}"
@@ -118,7 +118,12 @@
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="8" class="px-6 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
 

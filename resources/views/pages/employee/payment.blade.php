@@ -104,8 +104,33 @@
                     transition-all duration-200">
                     </div>
 
+                    {{-- Rating --}}
+                    <div class="mb-6">
+                        <p class="text-center text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                            Rate Your Experience
+                        </p>
+
+                        <div class="flex justify-center items-center gap-2 sm:gap-3 mb-2">
+                            @for ($i = 1; $i <= 5; $i++)
+                                <button type="button" class="star-rating-btn" data-rating="{{ $i }}"
+                                    aria-label="Rate {{ $i }} stars">
+                                    <svg class="star-icon w-8 sm:w-10 h-8 sm:h-10 transition-all duration-200 cursor-pointer"
+                                        viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                                    </svg>
+                                </button>
+                            @endfor
+                        </div>
+
+                        <p id="ratingText" class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 text-center">
+                            Click to rate
+                        </p>
+
+                        <input type="hidden" name="rating" id="ratingInput" value="">
+                    </div>
+
                     {{-- Payment --}}
-                    <div class="mb-7 sm:mb-8">
+                    {{--  <div class="mb-7 sm:mb-8">
                         <label
                             class="block text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2 sm:mb-3">
                             Payment Method
@@ -159,7 +184,7 @@
                         </div>
 
                         <input type="hidden" name="payment_method" id="paymentMethod" value="">
-                    </div>
+                    </div>  --}}
 
                     <button type="submit"
                         class="w-full rounded-lg bg-gradient-to-r from-green-600 to-green-500
@@ -177,6 +202,33 @@
             </div>
         </div>
     </div>
+
+    <style>
+        .star-rating-btn {
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .star-icon {
+            color: #d1d5db;
+            transition: all 0.2s ease;
+        }
+
+        .dark .star-icon {
+            color: #4b5563;
+        }
+
+        .star-rating-btn:hover .star-icon,
+        .star-rating-btn:hover ~ .amount-btn .star-icon {
+            color: #fbbf24;
+        }
+
+        .star-rating-btn.active .star-icon {
+            color: #f59e0b;
+        }
+    </style>
 
     <script>
         let selectedAmount = null;
@@ -219,6 +271,56 @@
         customInput.addEventListener('input', () => {
             finalAmount.value = customInput.value;
         });
+
+        // Star Rating
+        const starRatingBtns = document.querySelectorAll('.star-rating-btn');
+        const ratingInput = document.getElementById('ratingInput');
+        const ratingText = document.getElementById('ratingText');
+        const ratingLabels = ['Terrible', 'Poor', 'Average', 'Good', 'Excellent'];
+
+        starRatingBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const rating = btn.dataset.rating;
+                ratingInput.value = rating;
+
+                // Update star visual states
+                starRatingBtns.forEach((b, index) => {
+                    if (index < rating) {
+                        b.classList.add('active');
+                    } else {
+                        b.classList.remove('active');
+                    }
+                });
+
+                // Update text
+                ratingText.textContent = ratingLabels[rating - 1];
+                ratingText.classList.remove('text-gray-500', 'dark:text-gray-400');
+                ratingText.classList.add('text-gray-900', 'dark:text-gray-100', 'font-medium');
+            });
+
+            // Hover effect
+            btn.addEventListener('mouseenter', () => {
+                const rating = btn.dataset.rating;
+                starRatingBtns.forEach((b, index) => {
+                    if (index < rating) {
+                        b.querySelector('.star-icon').style.color = '#fbbf24';
+                    } else {
+                        b.querySelector('.star-icon').style.color = '#d1d5db';
+                    }
+                });
+            });
+        });
+
+        // Reset hover effect when leaving stars
+        const ratingContainer = document.querySelector('.flex.justify-center.items-center.gap-2');
+        if (ratingContainer) {
+            ratingContainer.addEventListener('mouseleave', () => {
+                starRatingBtns.forEach(btn => {
+                    btn.querySelector('.star-icon').style.color = '';
+                });
+            });
+        }
 
         // Payment method dropdown
         const paymentToggle = document.getElementById('paymentToggle');

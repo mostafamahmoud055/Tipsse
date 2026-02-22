@@ -24,7 +24,15 @@ class BranchController extends Controller
 
     public function show(Branch $branch)
     {
-        $branch->load(['user']);
+        $branch->load([
+            'user',
+            'employees',
+            'payments' => function($query) {
+                $query->with(['employee'])
+                    ->orderByDesc('created_at')
+                    ->limit(10);
+            }
+        ]);
         return view('pages.branch.show-branch', compact('branch'));
     }
     public function store(Request $request)

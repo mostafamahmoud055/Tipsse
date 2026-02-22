@@ -53,7 +53,7 @@
                 </div>
 
                 <div class="space-y-4">
-                    @foreach ($contractTerms as $index => $term)
+                    @forelse ($contractTerms as $index => $term)
                         <div class="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
                             <div class="flex justify-between items-center gap-2 mt-3">
                                 <div>
@@ -81,7 +81,13 @@
                                 @endcan
                             </div>
                         </div>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="8" class="px-6 py-5 text-center text-sm text-gray-500 dark:text-gray-400">
+                            </td>
+                        </tr>
+                    @endforelse
+
 
                 </div>
 

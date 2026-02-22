@@ -11,14 +11,20 @@ class Payment extends Model
 
     protected $fillable = [
         'employee_id',
+        'user_id',
         'payment_method',
         'status',
         'amount',
-        'reference_id',
+        'transaction_id',
+        'rating',
     ];
 
     public function employee()
     {
         return $this->belongsTo(Employee::class);
+    }
+    public function merchant()
+    {
+        return $this->belongsTo(User::class);
     }
 }

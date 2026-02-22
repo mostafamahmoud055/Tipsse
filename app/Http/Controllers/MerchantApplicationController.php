@@ -71,7 +71,12 @@ class MerchantApplicationController extends Controller
     {
         $application->load([
             'user.branches',
-            'user.employees'
+            'user.employees',
+            'user.payments' => function($query) {
+                $query->with(['employee'])
+                    ->orderByDesc('created_at')
+                    ->limit(10);
+            }
         ]);
 
         return view('pages.merchant.show-merchant', compact('application'));

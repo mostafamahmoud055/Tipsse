@@ -14,10 +14,12 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('payment_method');
             $table->decimal('amount', 10, 2);
-            $table->enum('status',['pending', 'successful', 'failed']);
-            $table->string('reference_id');
+            $table->enum('status', ['pending', 'successful', 'failed']);
+            $table->string('transaction_id');
+            $table->unsignedTinyInteger('rating')->nullable();
             $table->timestamps();
         });
     }

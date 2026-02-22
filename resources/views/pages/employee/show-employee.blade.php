@@ -105,65 +105,96 @@
                 <div class="mb-6 flex items-center justify-between">
                     <div class="flex items-center gap-2">
                         <h3 class="text-xl font-bold text-gray-900 dark:text-white">Recent Transactions</h3>
-                        <span class="text-sm font-bold text-green-600">Total 452</span>
-                    </div>
-                    <div class="relative">
-                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <circle cx="11" cy="11" r="8" />
-                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                            </svg>
-                        </span>
-                        <input type="text" placeholder="Search Tips"
-                            class="placeholder:text-gray-400 rounded-lg border border-gray-200 bg-gray-50 py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-green-500/20 focus:outline-none dark:border-gray-700 dark:bg-white/5">
                     </div>
                 </div>
 
                 <div class="space-y-4">
-                    @foreach (range(1, 4) as $index)
+                    @forelse($employee->payments as $payment)
                         <div
                             class="flex items-center justify-between rounded-2xl border border-gray-100 p-5 transition-shadow hover:shadow-sm dark:border-gray-800">
                             <div class="flex items-center gap-4">
                                 <div
-                                    class="flex h-12 w-12 items-center justify-center rounded-xl bg-green-50 text-green-600 dark:bg-green-500/10">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <line x1="12" y1="1" x2="12" y2="23"></line>
-                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                                    </svg>
+                                    class="flex h-12 w-12 items-center justify-center rounded-xl 
+                                    @if($payment->status === 'successful') bg-green-50 text-green-600 dark:bg-green-500/10
+                                    @elseif($payment->status === 'pending') bg-yellow-50 text-yellow-600 dark:bg-yellow-500/10
+                                    @else bg-red-50 text-red-600 dark:bg-red-500/10 @endif
+                                    ">
+                                    @if($payment->status === 'successful')
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                        </svg>
+                                    @elseif($payment->status === 'pending')
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <polyline points="12 6 12 12 16 14"></polyline>
+                                        </svg>
+                                    @else
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                                        </svg>
+                                    @endif
                                 </div>
                                 <div>
                                     <h4 class="text-base font-bold text-gray-900 dark:text-white">Tip Received</h4>
                                     <div class="flex items-center gap-2 text-xs font-medium text-gray-500">
-                                        <span>From Customer #{{ rand(100, 999) }}</span>
-                                        <span class="h-1 w-1 rounded-full bg-gray-300"></span>
-                                        <span>May 12, 2025</span>
+                                        <span>{{ $payment->created_at->format('M d, Y') }}</span>
                                     </div>
+                                    @if($payment->rating)
+                                        <div class="flex items-center gap-1 mt-2">
+                                            @for($i = 1; $i <= 5; $i++)
+                                                <svg class="w-3 h-3 {{ $i <= $payment->rating ? 'text-yellow-400' : 'text-gray-300' }}" 
+                                                    fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                                                </svg>
+                                            @endfor
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                             <div class="text-right">
-                                <p class="text-base font-bold text-green-600">+ SAR 150.00</p>
-                                <span class="text-[10px] font-bold uppercase text-gray-400">Completed</span>
+                                <p class="text-base font-bold 
+                                    @if($payment->status === 'successful') text-green-600
+                                    @elseif($payment->status === 'pending') text-yellow-600
+                                    @else text-red-600 @endif
+                                    ">
+                                    @if($payment->status === 'successful')+ @elseif($payment->status !== 'pending')- @endif SAR {{ number_format($payment->amount, 2) }}
+                                </p>
+                                <span class="text-[10px] font-bold uppercase 
+                                    @if($payment->status === 'successful') text-green-600
+                                    @elseif($payment->status === 'pending') text-yellow-600
+                                    @else text-red-600 @endif
+                                    ">{{ ucfirst($payment->status) }}</span>
                             </div>
                         </div>
-                    @endforeach
+                    @empty
+                        <div class="text-center py-8">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5" class="mx-auto text-gray-300 dark:text-gray-600 mb-3">
+                                <line x1="12" y1="1" x2="12" y2="23"></line>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">No payments received yet</p>
+                        </div>
+                    @endforelse
                 </div>
 
-                <div class="mt-8 flex items-center justify-between border-t border-gray-100 pt-6 dark:border-gray-800">
-                    <p class="text-xs font-medium text-gray-500">Showing data 1 to 8 of 452 entries</p>
-                    <div class="flex items-center gap-2">
-                        <button
-                            class="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-white/5">‹</button>
-                        <button
-                            class="flex h-8 w-8 items-center justify-center rounded-lg bg-green-600 text-xs font-bold text-white shadow-lg shadow-green-600/20">1</button>
-                        <button
-                            class="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-xs font-bold text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/5">2</button>
-                        <button
-                            class="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-white/5">›</button>
+                @if($employee->payments->count() > 0)
+                    <div class="mt-8 flex items-center justify-between border-t border-gray-100 pt-6 dark:border-gray-800">
+                        <p class="text-xs font-medium text-gray-500">Showing {{ $employee->payments->count() }} recent transactions</p>
+                        <a href="{{ route('tips') }}" class="text-xs font-bold text-green-600 hover:text-green-700 transition-colors">
+                            View All →
+                        </a>
                     </div>
-                </div>
+                @endif
             </div>
         </div>
 

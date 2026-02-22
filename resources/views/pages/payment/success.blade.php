@@ -109,7 +109,7 @@
 
     <script>
         // Auto redirect after 5 seconds
-        let countdown = 5;
+        let countdown = 10;
         const countdownElement = document.getElementById('countdown');
 
         const interval = setInterval(() => {

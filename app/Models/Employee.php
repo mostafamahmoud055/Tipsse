@@ -23,4 +23,8 @@ class Employee extends Model
     {
         return $this->belongsTo(Branch::class);
     }
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
 }

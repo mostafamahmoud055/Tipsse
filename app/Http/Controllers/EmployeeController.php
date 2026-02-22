@@ -31,7 +31,13 @@ class EmployeeController extends Controller
 
     public function show(Employee $employee)
     {
-        $employee->load(['user', 'branch']); // جلب بيانات الفرع أيضاً
+        $employee->load([
+            'user',
+            'branch',
+            'payments' => function($query) {
+                $query->orderByDesc('created_at')->limit(10);
+            }
+        ]);
 
         // رابط QR Code يشير لصفحة الدفع
         $renderer = new ImageRenderer(

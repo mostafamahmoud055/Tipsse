@@ -11,7 +11,75 @@ class PaymentService
 {
     public function __construct(protected PaymentGatewayService $gatewayService) {}
 
-    public function processPayment(int $id, string $method, float $amount)
+    public function getPayments(array $filters = [], int $perPage = 10)
+    {
+        $query = Payment::with(['employee.branch', 'employee.user']);
+
+        $user = auth()->user();
+
+        // Filter by merchant owner
+        if ($user->role === 'merchant_owner') {
+            $query->where('user_id', $user->id);
+        }
+
+        // Search filter - search in employee name, payment id, transaction id
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('employee', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        if (!empty($filters['sort'])) {
+            if ($filters['sort'] === 'newest') {
+                $query->latest();
+            } elseif ($filters['sort'] === 'oldest') {
+                $query->oldest();
+            }
+        } else {
+            $query->latest();
+        }
+
+        // Calculate statistics before pagination
+        $stats = $this->calculatePaymentStats(clone $query);
+
+        // Paginate and attach statistics
+        $paginated = $query->paginate($perPage)->withQueryString();
+
+        // Attach stats to the paginated result
+        $paginated->stats = $stats;
+
+        return $paginated;
+    }
+
+    /**
+     * Calculate payment statistics
+     */
+    protected function calculatePaymentStats($query)
+    {
+        return [
+            'total_tips' => $query->count(),
+            'released_tips' => $query->where('status', PaymentStatusEnum::SUCCESSFUL->value)->count(),
+            'pending_tips' => $query->where('status', PaymentStatusEnum::PENDING->value)->count(),
+            'rejected_tips' => $query->where('status', PaymentStatusEnum::FAILED->value)->count(),
+            // 'total_count' => $query->count(),
+            // 'released_count' => $query->where('status', PaymentStatusEnum::SUCCESSFUL->value)->count(),
+            // 'pending_count' => $query->where('status', PaymentStatusEnum::PENDING->value)->count(),
+            // 'rejected_count' => $query->where('status', PaymentStatusEnum::FAILED->value)->count(),
+            // 'average_rating' => $query->whereNotNull('rating')->avg('rating'),
+        ];
+    }
+
+    /**
+     * Legacy method name for backward compatibility
+     */
+    public function getPayemnts(array $filters = [], int $perPage = 10)
+    {
+        return $this->getPayments($filters, $perPage);
+    }
+    public function processPayment(int $id, int $rating, string $method, float $amount)
     {
         $employee = Employee::findOrFail($id);
 
@@ -22,25 +90,40 @@ class PaymentService
         }
 
         $result = $gateway->pay($amount, $employee);
-        // Determine status: success, failed, or pending
-
-        $paymentStatus = $this->determinePaymentStatus($result['status']);
 
         // إذا فيه checkout_url، رجعه للمستخدم
         if (isset($result['checkout_url'])) {
+            // // Create payment record
+            $payment = Payment::create([
+                'employee_id'    => $employee->id,
+                'payment_method' => $method,
+                'status'         => PaymentStatusEnum::PENDING->value,
+                'amount'         => $amount,
+                'rating'         => $rating,
+                'user_id'        => $employee->user_id,
+                'transaction_id'   => $result['transaction_id'] ?? null,
+            ]);
+
             return [
-                'status' => $paymentStatus->value,
+                'status' => PaymentStatusEnum::PENDING->value,
                 'checkout_url' => $result['checkout_url'],
-                'transaction_id' => $result['transaction_id'] ?? null,
+                'transaction_id' => $payment->transaction_id,
+                'payment_id' => $payment->id,
             ];
         }
-        // لو الدفع ناجح
-        if ($paymentStatus === PaymentStatusEnum::SUCCESSFUL) {
-            return [
-                'status' => $paymentStatus->value,
-                'transaction_id' => $result['transaction_id'] ?? null,
-            ];
-        }
+        // لو instant payment gateway
+        $paymentStatus = $this->determinePaymentStatus($result['status']);
+
+        Payment::create([
+            'employee_id'    => $employee->id,
+            'payment_method' => $method,
+            'status'         => $paymentStatus->value,
+            'amount'         => $amount,
+            'rating'         => $rating,
+            'user_id'        => $employee->user_id,
+            'transaction_id'   => $result['transaction_id'] ?? null,
+        ]);
+
         // لو الدفع فشل
         return [
             'error' => "Payment cannot be processed for employee: {$employee->name}",
@@ -68,21 +151,5 @@ class PaymentService
         }
 
         return $gateway;
-    }
-
-    protected function createPaymentRecord(
-        Employee $employee,
-        string $gateway,
-        PaymentStatusEnum $status,
-        array $gatewayResult,
-        float $amount
-    ): Payment {
-        return Payment::create([
-            'employee_id'    => $employee->id,
-            'payment_method' => $gateway,
-            'status'         => $status->value,
-            'amount'         => $amount,
-            'reference_id'   => $gatewayResult['transaction_id'] ?? null,
-        ]);
     }
 }

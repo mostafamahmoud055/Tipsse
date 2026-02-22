@@ -43,7 +43,7 @@ class EmployeeService
     }
     public function findById($id)
     {
-        return Employee::with(['user', 'branch'])->findOrFail($id);
+        return Employee::with(['user', 'branch','payment'])->findOrFail($id);
     }
 
     public function create(array $data)

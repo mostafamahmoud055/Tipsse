@@ -158,44 +158,65 @@
             <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
                 <div class="mb-2 flex items-center justify-between">
                     <div class="flex items-center gap-2">
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white">All Tips</h3>
-                        <span class="text-xs font-bold text-green-600">Total 255</span>
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white">Recent Tips</h3>
                     </div>
                 </div>
-                <p class="mb-6 text-xs text-gray-500">All tips for all employees at this merchant</p>
+                <p class="mb-6 text-xs text-gray-500">Recent tips for all employees at this merchant</p>
 
                 <div class="space-y-4">
-                    @php
-                        $tips = [
-                            ['name' => 'Noor Oorm', 'status' => 'Pending', 'color' => 'bg-yellow-50 text-yellow-600'],
-                            ['name' => 'Noor Oorm', 'status' => 'Approved', 'color' => 'bg-green-50 text-green-600'],
-                            ['name' => 'Noor Oorm', 'status' => 'Rejected', 'color' => 'bg-red-50 text-red-600'],
-                        ];
-                    @endphp
-                    @foreach ($tips as $tip)
-                        <div class="rounded-xl border border-gray-100 p-4 dark:border-gray-800">
+                    @forelse($application->user->payments as $payment)
+                        <div class="rounded-xl border border-gray-100 p-4 dark:border-gray-800 hover:shadow-sm transition-shadow">
                             <div class="flex items-center justify-between mb-2">
-                                <h4 class="text-sm font-bold text-gray-900 dark:text-white">{{ $tip['name'] }}</h4>
+                                <h4 class="text-sm font-bold text-gray-900 dark:text-white">{{ $payment->employee->name ?? 'Unknown' }}</h4>
                                 <span
-                                    class="rounded px-2 py-0.5 text-[10px] font-bold {{ $tip['color'] }}">{{ $tip['status'] }}</span>
-                                <span class="text-lg font-bold text-green-600">150</span>
+                                    class="rounded px-2 py-0.5 text-[10px] font-bold
+                                    @if($payment->status === 'successful') bg-green-50 text-green-600
+                                    @elseif($payment->status === 'pending') bg-yellow-50 text-yellow-600
+                                    @else bg-red-50 text-red-600 @endif
+                                    ">{{ ucfirst($payment->status) }}</span>
+                                <span class="text-lg font-bold 
+                                    @if($payment->status === 'successful') text-green-600
+                                    @elseif($payment->status === 'pending') text-yellow-600
+                                    @else text-red-600 @endif
+                                    ">{{ number_format($payment->amount, 0) }}</span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <div class="flex text-yellow-400">
-                                    @foreach (range(1, 5) as $star)
-                                        <svg class="w-3 h-3 {{ $star == 5 ? 'text-gray-300' : '' }}" fill="currentColor"
-                                            viewBox="0 0 20 20">
-                                            <path
-                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                        </svg>
-                                    @endforeach
+                                <div class="flex text-yellow-400 gap-1">
+                                    @if($payment->rating)
+                                        @for($i = 1; $i <= 5; $i++)
+                                            <svg class="w-3 h-3 {{ $i <= $payment->rating ? 'fill-current' : 'text-gray-300 dark:text-gray-600' }}" 
+                                                viewBox="0 0 20 20">
+                                                <path
+                                                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                            </svg>
+                                        @endfor
+                                    @else
+                                        <span class="text-xs text-gray-500">Not rated</span>
+                                    @endif
                                 </div>
-                                <button class="text-gray-400">{!! menu_icon('edit-icon') !!}</button>
+                                <span class="text-xs font-bold text-gray-400 uppercase">{{ $payment->payment_method }}</span>
                             </div>
-                            <p class="mt-1 text-[10px] text-gray-400">12/05/2025</p>
+                            <p class="mt-2 text-[10px] text-gray-400">{{ $payment->created_at->format('m/d/Y') }}</p>
                         </div>
-                    @endforeach
+                    @empty
+                        <div class="text-center py-8">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5" class="mx-auto text-gray-300 dark:text-gray-600 mb-3">
+                                <line x1="12" y1="1" x2="12" y2="23"></line>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">No tips received yet</p>
+                        </div>
+                    @endforelse
                 </div>
+
+                @if($application->user->payments->count() > 0)
+                    <div class="mt-4 flex justify-end">
+                        <a href="{{ route('tips') }}" class="text-xs font-bold text-green-600 hover:text-green-700 transition-colors">
+                            View All Tips →
+                        </a>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

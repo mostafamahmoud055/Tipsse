@@ -30,7 +30,7 @@
 
         @include('layouts.statistics.card-statistics', [
             'title' => 'Tips',
-            'value' => '$' . number_format($totalTips, 2),
+            'value' => 'SAR ' . number_format($totalTips, 2),
             'icon' => 'images/icons/Clip path group.png',
             'iconBg' => 'bg-icon-red',
         ])
@@ -44,7 +44,7 @@
         </div>
 
         <div class="col-span-3 md:col-span-1">
-            <x-tipssestate.recent-tips />
+            <x-tipssestate.recent-tips :tips="$recentTips" />
         </div>
 
     </div>

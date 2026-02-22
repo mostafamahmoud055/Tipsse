@@ -30,7 +30,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                        @foreach ($employees as $employee)
+                        @forelse ($employees as $employee)
                             <tr class="hover:bg-gray-50 dark:hover:bg-white/5">
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">E -
                                     {{ $employee->id }}</td>
@@ -84,7 +84,12 @@
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="8" class="px-6 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
 

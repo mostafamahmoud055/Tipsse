@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Employee;
 use App\Models\User;
+use App\Models\Payment;
 use Illuminate\Database\Eloquent\Model;
 
 class Branch extends Model
@@ -19,11 +20,16 @@ class Branch extends Model
     {
         return $this->belongsTo(User::class);
     }
+
     public function employees()
     {
         return $this->hasMany(Employee::class);
     }
 
+    public function payments()
+    {
+        return $this->hasManyThrough(Payment::class, Employee::class);
+    }
 
     public function getIsActiveAttribute(): string
     {

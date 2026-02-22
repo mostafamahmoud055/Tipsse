@@ -27,7 +27,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                        @foreach ($branches as $branch)
+                        @forelse ($branches as $branch)
                             <tr class="hover:bg-gray-50 dark:hover:bg-white/5">
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
                                     B - {{ $branch->id }}
@@ -98,11 +98,16 @@
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="8" class="px-6 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
 
-               <div class="m-4 flex justify-center">
+                <div class="m-4 flex justify-center">
                     {{ $branches->links() }}
                 </div>
             </div>
