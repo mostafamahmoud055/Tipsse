@@ -79,7 +79,7 @@ class PaymentService
     {
         return $this->getPayments($filters, $perPage);
     }
-    public function processPayment(int $id, int $rating = 0, string $method, float $amount)
+    public function processPayment(int $id, int $rating, string $method, float $amount)
     {
         $employee = Employee::findOrFail($id);
 
