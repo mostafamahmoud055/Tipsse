@@ -48,6 +48,7 @@ class MerchantSeeder extends Seeder
                 'user_id' => $user->id,
                 'application_number' => 'APP-' . now()->format('YmdHis'),
                 'status' => 'pending',
+                'percentage' => 10,
             ]);
         });
     }

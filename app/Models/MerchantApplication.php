@@ -15,6 +15,7 @@ class MerchantApplication extends Model
         'user_id',
         'application_number',
         'status',
+        'percentage',
         'rejection_reason',
     ];
 

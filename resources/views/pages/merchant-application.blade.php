@@ -57,6 +57,7 @@
                             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Email</th>
                             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Phone</th>
                             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Status</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Percantage</th>
                             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Date</th>
                             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Actions</th>
                         </tr>
@@ -94,6 +95,9 @@
                                         class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $statusClasses[$app->status] ?? 'bg-gray-50 text-gray-700 dark:bg-gray-500/15 dark:text-gray-500' }}">
                                         {{ $app->status }}
                                     </span>
+                                                                    <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
+                                    {{ $app->percentage . ' %'?? '-' }}
+                                </td>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
                                     {{ $app->created_at->format('Y M d') }}

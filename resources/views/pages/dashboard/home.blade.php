@@ -1,7 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="grid sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-7 my-4">
+    @php
+        if ($isMerchant) {
+            $gridCols = 'xl:grid-cols-6';
+        } else {
+            $gridCols = 'xl:grid-cols-5';
+        }
+    @endphp
+    <div class="grid sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 {{ $gridCols }} gap-7 my-4">
         @include('layouts.statistics.card-statistics', [
             'title' => 'Merchants',
             'value' => $totalMerchants,
@@ -35,6 +42,15 @@
             'iconBg' => 'bg-icon-red',
         ])
 
+        @if (auth()->user()->role === 'merchant_owner')
+            @include('layouts.statistics.card-statistics', [
+                'title' => 'Commission Percentage',
+                'value' => 100 - $merchantPercentage . ' %',
+                'icon' => '',
+                'iconBg' => 'bg-icon-purple',
+            ])
+        @endif
+
 
     </div>
     <div class="grid grid-cols-3 gap-4 pb-4">
@@ -43,7 +59,8 @@
             <x-tipssestate.statistics-chart />
         </div>
 
-        <div class="col-span-3 md:col-span-1">
+        <div class="grid col-span-3 md:col-span-1 gap-4 ">
+            <x-tipssestate.application-status :merchantApplicationStatus="$merchantApplicationStatus" />
             <x-tipssestate.recent-tips :tips="$recentTips" />
         </div>
 
@@ -51,11 +68,12 @@
     <div class="grid grid-cols-3 gap-4 pb-4">
 
         <div class="col-span-3 md:col-span-2">
-           <x-tipssestate.recent-employees :employees="$recentEmployees" />
+            <x-tipssestate.recent-employees :employees="$recentEmployees" />
 
         </div>
         <div class="col-span-3 md:col-span-1">
             <div class="grid grid-cols-1 gap-4 pb-4">
+
                 <x-tipssestate.card-section title="{{ $merchantsThisMonth }} Merchants This Month" />
                 <x-tipssestate.card-section title="{{ $branchesThisMonth }} Branches This Month" />
                 <x-tipssestate.card-section title="{{ $employeesThisMonth }} Employees This Month" />

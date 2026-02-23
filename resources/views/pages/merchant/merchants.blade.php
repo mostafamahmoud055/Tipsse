@@ -49,6 +49,8 @@
                             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Email</th>
                             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Phone</th>
                             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Status</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">percantage
+                            </th>
                             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Date</th>
                             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Actions</th>
                         </tr>
@@ -87,6 +89,9 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
+                                    {{ $app->percentage . ' %'?? '-' }}
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
                                     {{ $app->created_at->format('Y M d') }}
                                 </td>
                                 <td class="px-6 py-4">
@@ -100,8 +105,9 @@
                                             {{-- Edit --}}
                                             <x-form.modals.merchant-modal modalTitle='Edit Merchant' :application=$app />
                                             {{-- Delete --}}
-                                            <x-form.modals.confirm-delete action="{{ route('merchants.delete', $app->id) }}"
-                                                method="DELETE" title="Delete Merchant"
+                                            <x-form.modals.confirm-delete
+                                                action="{{ route('merchants.delete', $app->id) }}" method="DELETE"
+                                                title="Delete Merchant"
                                                 message="Are you sure you want to delete the merchant '{{ $app->user?->name ?? 'N/A' }}'? This action cannot be undone.">
                                                 {!! menu_icon('delete-icon') !!}
                                             </x-form.modals.confirm-delete>

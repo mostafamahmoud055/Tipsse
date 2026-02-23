@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Branch;
 use App\Models\BusinessType;
 use App\Models\Employee;
+use App\Models\MerchantApplication;
 use App\Models\Payment;
 use App\Models\User;
 
@@ -117,6 +118,25 @@ class DashboardController extends Controller
             ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
             ->sum('amount');
 
+        /*
+    |--------------------------------------------------------------------------
+    | Merchant Application Percentage
+    |--------------------------------------------------------------------------
+    */
+
+        $merchantPercentage = null;
+        $merchantApplicationStatus = null;
+
+        if ($isMerchant) {
+            $merchantApplication = MerchantApplication::where('user_id', $merchantId)
+                ->first();
+
+            if ($merchantApplication) {
+                $merchantPercentage = $merchantApplication->percentage;
+                $merchantApplicationStatus = $merchantApplication->status;
+            }
+        }
+
         return view('pages.dashboard.home', compact(
             'totalMerchants',
             'totalBranches',
@@ -125,7 +145,10 @@ class DashboardController extends Controller
             'branchesThisMonth',
             'employeesThisMonth',
             'recentEmployees',
-            'recentTips'
+            'recentTips',
+            'merchantPercentage',
+            'merchantApplicationStatus',
+            'isMerchant',
         ) + [
             'totalBusinessTypes' => BusinessType::count(),
             'totalTips' => $totalTips,

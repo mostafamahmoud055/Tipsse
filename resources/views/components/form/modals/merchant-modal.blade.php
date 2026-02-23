@@ -132,14 +132,14 @@
                         </div>
 
                         @if (!$updateStatus)
-                                                <div class="col-span-2">
-                            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                National id<span class="text-error-500">*</span>
-                            </label>
-                            <input type="text" required name="national_id" placeholder="1234567890"
-                                value="{{ old('national_id', $application?->user?->national_id) }}"
-                                class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800">
-                        </div>
+                            <div class="col-span-2">
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                                    National id<span class="text-error-500">*</span>
+                                </label>
+                                <input type="text" required name="national_id" placeholder="1234567890"
+                                    value="{{ old('national_id', $application?->user?->national_id) }}"
+                                    class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800">
+                            </div>
                             <div class="col-span-2">
                                 <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                                     Password<span class="text-error-500">*</span>
@@ -167,7 +167,18 @@
                                     </span>
                                 </div>
                             </div>
+                            <div class=" col-span-2">
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                                    Percentage<span class="text-error-500">*</span>
+                                </label>
+                                <div class="flex">
 
+                                    <input type="number" required name="percentage" placeholder="ex: 30" step="1" min="0" max="100"
+                                    inputmode="numeric" pattern="[0-9]*" onkeydown="return event.key !== '.'"  oninput="if (this.value > 100) this.value = 100;" value="{{ old('percentage', $application?->percentage) }}"
+                                    class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800">
+                                    <span class="ml-2 self-end text-sm text-gray-500 dark:text-gray-400">%</span>
+                                </div>
+                            </div>
                             <div>
 
                                 <div x-data="{ switcherToggle: {{ old('is_active', $application?->user?->is_active ?? false) ? 'true' : 'false' }} }">

@@ -53,8 +53,9 @@ class MerchantApplicationController extends Controller
             'phone' => 'required|regex:/^\+?\d{7,15}$/',
             'national_id' => 'required|regex:/^\+?\d{7,15}$/',
             'password' => 'required|string|min:6',
+            'percentage' => 'required|integer|min:0|max:100',
             'business_type' => 'required|exists:business_types,name',
-            'is_actve' => 'boolean'
+            'is_active' => 'boolean'
         ]);
 
 
@@ -98,7 +99,7 @@ class MerchantApplicationController extends Controller
             'is_active'     => 'boolean',
             'status'        => 'nullable|in:pending,approved,rejected',
             'national_id' => 'nullable|regex:/^\+?\d{7,15}$/',
-            'is_actve' => 'boolean'
+            'percentage' => 'nullable|integer|min:0|max:100',
         ]);
 
         $this->merchantService->editMerchant($application, $request->all());

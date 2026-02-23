@@ -129,7 +129,7 @@ class MerchantService
 
             MerchantApplication::create([
                 'user_id' => $user->id,
-                'user_id' => $user->id,
+                'percentage' => $data['percentage'],
                 'application_number' => $this->generateApplicationNumber(),
                 'status' => 'pending',
             ]);
@@ -162,6 +162,18 @@ class MerchantService
                 $userData['password'] = Hash::make($data['password']);
             }
 
+            if (array_key_exists('phone', $data)) {
+                $userData['phone'] = $data['phone'];
+            }
+
+            if (array_key_exists('business_type', $data)) {
+                $userData['business_type'] = $data['business_type'];
+            }
+
+            if (array_key_exists('is_active', $data)) {
+                $userData['is_active'] = $data['is_active'];
+            }
+
             if (!empty($userData)) {
                 $user->update($userData);
             }
@@ -177,27 +189,10 @@ class MerchantService
                 ]);
             }
 
-            /*
-        |--------------------------------------------------------------------------
-        | Update Merchant
-        |--------------------------------------------------------------------------
-        */
-            $merchantData = [];
-
-            if (array_key_exists('phone', $data)) {
-                $merchantData['phone'] = $data['phone'];
-            }
-
-            if (array_key_exists('business_type', $data)) {
-                $merchantData['business_type'] = $data['business_type'];
-            }
-
-            if (array_key_exists('is_active', $data)) {
-                $merchantData['is_active'] = $data['is_active'];
-            }
-
-            if (!empty($merchantData)) {
-                $user->update($merchantData);
+            if (array_key_exists('percentage', $data)) {
+                $application->update([
+                    'percentage' => $data['percentage'],
+                ]);
             }
 
             return $application->refresh();

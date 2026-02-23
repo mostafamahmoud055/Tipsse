@@ -13,12 +13,15 @@
                     <thead class="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-white/5">
                         <tr>
                             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">ID</th>
-                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Merchant Name</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Merchant Name
+                            </th>
                             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Busssness
                                 Type</th>
                             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Email</th>
                             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Phone</th>
                             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Status</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Percentage
+                            </th>
                             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Date</th>
                             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Actions</th>
                         </tr>
@@ -58,15 +61,18 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
+                                    {{ $app->percentage . ' %' ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
                                     {{ $app->created_at->format('Y M d') }}
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex gap-2">
                                         <div class="flex gap-2">
- 
+
 
                                             {{-- Edit --}}
-                                            <x-form.modals.contract-modal modalTitle='Edit Contract' :application=$app  />
+                                            <x-form.modals.contract-modal modalTitle='Edit Contract' :application=$app />
 
                                         </div>
 
@@ -77,7 +83,7 @@
                     </tbody>
                 </table>
 
-               <div class="m-4 flex justify-center">
+                <div class="m-4 flex justify-center">
                     {{ $applications->links() }}
                 </div>
             </div>

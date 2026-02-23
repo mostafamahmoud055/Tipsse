@@ -45,6 +45,7 @@ class UserFactory extends Factory
 
             MerchantApplication::factory()->create([
                 'user_id' => $user->id,
+                'percentage' => $this->faker->numberBetween(5, 20),
             ]);
         });
     }
