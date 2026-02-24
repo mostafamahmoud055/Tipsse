@@ -86,6 +86,7 @@ class MerchantApplicationController extends Controller
 
     public function edit(Request $request, MerchantApplication $application)
     {
+
         $request->validate([
             'name'          => 'nullable|string|max:255',
             'email' => [
@@ -95,7 +96,7 @@ class MerchantApplicationController extends Controller
             ],
             'phone'         => 'nullable|regex:/^\+?\d{7,15}$/',
             'password'      => 'nullable|string|min:6',
-            'business_type' => 'required|exists:business_types,name',
+            'business_type' => 'nullable|exists:business_types,name',
             'is_active'     => 'boolean',
             'status'        => 'nullable|in:pending,approved,rejected',
             'national_id' => 'nullable|regex:/^\+?\d{7,15}$/',

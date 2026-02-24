@@ -107,7 +107,7 @@ class ContractController extends Controller
         $contractTerms = Contract::all();
 
         $pdf = Pdf::loadView('contracts.pdf', [
-            'merchant' => $user,
+            'user' => $user,
             'contractTerms' => $contractTerms,
         ]);
 
